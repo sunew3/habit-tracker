@@ -205,7 +205,6 @@ main { max-width:800px; margin:0 auto; padding:16px 14px 60px; }
   <button class="tab" onclick="showTab('cycle')">🌙 생리주기</button>
   <button class="tab" onclick="showTab('exercise')">🏃 운동</button>
   <button class="tab" onclick="showTab('diet')">🥗 식단</button>
-  <button class="tab" onclick="showTab('night')">🌙 야식 대책</button>
   <button class="tab" onclick="showTab('supp_plan')">💊 영양제</button>
   <button class="tab active" onclick="showTab('today')">✅ 오늘 기록</button>
   <button class="tab" onclick="showTab('overview')">📊 한눈에 보기</button>
@@ -216,25 +215,26 @@ main { max-width:800px; margin:0 auto; padding:16px 14px 60px; }
 <div id="tab-plan" style="display:none;">
 <div style="max-width:780px;margin:0 auto;padding:16px 14px 40px;">
   <div style="background:var(--terra);color:white;border-radius:12px;padding:16px 18px;margin-bottom:14px;">
-    <div style="font-size:12px;opacity:.7;margin-bottom:4px;">⚡ 저녁 운동자 핵심</div>
-    <div style="font-size:16px;font-weight:600;">운동 전 미리 먹기가 야식 차단의 유일한 방법!</div>
+    <div style="font-size:12px;opacity:.7;margin-bottom:4px;">⚡ 근감소형 비만 타파 전략</div>
+    <div style="font-size:16px;font-weight:600;">근육 먼저 키워야 지방이 빠진다</div>
   </div>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:10px;">
-    <div style="font-size:14px;font-weight:600;margin-bottom:10px;">🔍 왜 운동해도 안 빠질까?</div>
+    <div style="font-size:14px;font-weight:600;margin-bottom:10px;">🔍 왜 운동해도 아랫배가 안 빠질까?</div>
     <div style="background:#1A1A1A;color:white;border-radius:10px;padding:15px 16px;font-size:13px;line-height:1.8;">
-      저녁 운동 → 귀가 9~10시 → 배고파서 먹음<br>
-      → <strong style="color:#C8A860;">이때 먹은 탄수화물이 지방으로 직행</strong><br><br>
+      <strong style="color:#FFD080;">근감소형 비만</strong> — 근육량↓ → 기초대사량↓ → 같은 칼로리도 더 쌓임<br>
+      수영 위주 운동 → 체온 유지 위해 체지방 보존하는 경향 + 식욕↑<br>
+      저녁 운동 → 귀가 9~10시 → 야간 탄수화물 → <strong style="color:#C8A860;">아랫배 내장지방으로 직행</strong><br><br>
       밤에는 인슐린 감수성↓ → 같은 음식도 지방 전환율↑<br>
-      특히 <strong style="color:#FFB0A0;">아랫배(내장지방)</strong>에 먼저 쌓여요.<br>
-      운동으로 태운 칼로리를 귀가 후 다시 채우는 악순환.
+      아침 거름 → 공복 운동 시 <strong style="color:#FFB0A0;">지방 전에 근육 분해</strong> → 악순환
     </div>
   </div>
   <div style="background:var(--sage-light);border:1px solid var(--sage);border-left:3px solid var(--sage);border-radius:10px;padding:13px 15px;margin-bottom:10px;color:var(--sage-dark);">
-    <div style="font-size:12px;font-weight:700;margin-bottom:6px;">✅ 핵심 3가지만 지키면 돼요</div>
-    <div style="font-size:12px;line-height:1.85;">
-      1️⃣ <strong>운동 전 미리 먹기</strong> — 귀가 후 배고픔을 없애는 유일한 방법<br>
-      2️⃣ <strong>귀가 후 단백질+채소만</strong> — 탄수화물(밥·빵·면) 없이<br>
-      3️⃣ <strong>취침 2시간 전 금식</strong> — 10시 귀가면 10시 이후는 물만
+    <div style="font-size:12px;font-weight:700;margin-bottom:6px;">✅ 핵심 4가지</div>
+    <div style="font-size:12px;line-height:1.9;">
+      1️⃣ <strong>헬스 근력운동 우선</strong> — 수영보다 헬스가 기초대사량 올리는 데 효과적<br>
+      2️⃣ <strong>운동 전 미리 먹기</strong> — 귀가 후 배고픔·근육분해 동시 차단<br>
+      3️⃣ <strong>귀가 후 단백질+채소만</strong> — 탄수화물(밥·빵·면) 없이<br>
+      4️⃣ <strong>단백질 60g+ 매일</strong> — 근육 합성 없이는 대사 개선 불가
     </div>
   </div>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;">
@@ -339,32 +339,65 @@ main { max-width:800px; margin:0 auto; padding:16px 14px 60px; }
 <div id="tab-diet" style="display:none;">
 <div style="max-width:780px;margin:0 auto;padding:16px 14px 40px;">
   <div style="background:var(--sage-light);border:1px solid var(--sage);border-left:3px solid var(--sage);border-radius:10px;padding:13px 15px;margin-bottom:10px;color:var(--sage-dark);">
-    <div style="font-size:12px;font-weight:700;margin-bottom:6px;">📌 식단 4원칙</div>
+    <div style="font-size:12px;font-weight:700;margin-bottom:6px;">📌 식단 원칙</div>
     <div style="font-size:12px;line-height:1.85;"><ul style="margin-left:14px;">
       <li><strong>운동 전 미리 먹기</strong> — 고구마+달걀 or 쉐이크</li>
       <li><strong>귀가 후 탄수화물 0</strong> — 단백질+채소만</li>
-      <li><strong>점심을 가장 든든하게</strong></li>
-      <li><strong>도토리묵·해초샐러드</strong> — 야식 최고 대체재</li>
+      <li><strong>점심을 가장 든든하게</strong> — 하루 탄수화물은 점심에 몰기</li>
+      <li><strong>단백질 60g+</strong> — 근육 유지 없이는 지방 감량 불가</li>
     </ul></div>
   </div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px;">
-    <div style="padding:10px 15px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;">운동일 식단</div>
+
+  <!-- 운동일 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:8px;">
+    <div style="padding:10px 15px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;">🏊🏋️ 운동일</div>
     <div style="padding:7px 0;">
       <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">아침</span><span style="font-size:12px;flex:1;">나또+현미밥 70g / 달걀+김치 / 단백질쉐이크</span></div>
       <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">점심</span><span style="font-size:12px;flex:1;">비빔밥(고기추가) / 제육볶음+쌈채소 / 닭갈비(사리빼고)</span></div>
       <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--terra);min-width:52px;padding-top:2px;">운동 전</span><span style="font-size:12px;flex:1;"><strong>고구마 100g + 달걀 1개</strong> or 단백질쉐이크</span></div>
-      <div style="display:flex;gap:8px;padding:7px 15px;background:#FFF5F5;"><span style="font-size:10px;font-weight:700;color:var(--sage-dark);min-width:52px;padding-top:2px;">귀가 후</span><span style="font-size:12px;flex:1;color:var(--sage-dark);"><strong>단백질+채소만</strong> — 닭가슴살+해초샐러드 / 두부+오이 / 달걀+도토리묵</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;background:#F5FAF5;"><span style="font-size:10px;font-weight:700;color:var(--sage-dark);min-width:52px;padding-top:2px;">귀가 후</span><span style="font-size:12px;flex:1;color:var(--sage-dark);"><strong>단백질+채소만</strong> — 닭가슴살+해초샐러드 / 두부+오이 / 달걀+도토리묵</span></div>
     </div>
   </div>
-</div>
-</div>
 
-<!-- NIGHT -->
-<div id="tab-night" style="display:none;">
-<div style="max-width:780px;margin:0 auto;padding:16px 14px 40px;">
-  <div style="background:#1A1A1A;color:white;border-radius:14px;padding:18px 20px;margin-bottom:12px;">
-    <div style="font-size:16px;font-weight:700;color:#C8A860;margin-bottom:10px;">밤 10시 귀가 후</div>
-    <div style="font-size:13px;line-height:1.85;color:rgba(255,255,255,.8);">
+  <!-- 비운동일 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:8px;">
+    <div style="padding:10px 15px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;">🌿 비운동일 <span style="font-size:11px;font-weight:400;color:var(--text-light);">칼로리 -100~150kcal</span></div>
+    <div style="padding:7px 0;">
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">아침</span><span style="font-size:12px;flex:1;">달걀 2개+오이 / 나또+김 / 단백질쉐이크</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">점심</span><span style="font-size:12px;flex:1;">현미밥 반공기+단백질 반찬 위주 / 샐러드+닭가슴살</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">간식</span><span style="font-size:12px;flex:1;">그릭요거트 / 견과류 한 줌 / 아몬드브리즈</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;background:#F5FAF5;"><span style="font-size:10px;font-weight:700;color:var(--sage-dark);min-width:52px;padding-top:2px;">저녁</span><span style="font-size:12px;flex:1;color:var(--sage-dark);">두부+나물 / 달걀찜+오이 — <strong>탄수화물 없이</strong></span></div>
+    </div>
+  </div>
+
+  <!-- 과식 다음날 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:8px;">
+    <div style="padding:10px 15px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;">🔄 과식 다음날 <span style="font-size:11px;font-weight:400;color:var(--text-light);">리셋 모드</span></div>
+    <div style="padding:7px 0;">
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">원칙</span><span style="font-size:12px;flex:1;color:var(--terra);">굶지 말 것 — 굶으면 다음 폭식 유발</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">아침</span><span style="font-size:12px;flex:1;">따뜻한 물 500ml + 달걀 1개 + 오이</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">점심</span><span style="font-size:12px;flex:1;">나물비빔밥(고기빼고) / 된장찌개+두부+채소 반찬</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">저녁</span><span style="font-size:12px;flex:1;">해초샐러드+닭가슴살 / 두부+오이무침</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;background:#F5FAF5;"><span style="font-size:10px;font-weight:700;color:var(--sage-dark);min-width:52px;padding-top:2px;">핵심</span><span style="font-size:12px;flex:1;color:var(--sage-dark);">물 2L+ / 나트륨 최소화 / 저녁 운동으로 붓기 제거</span></div>
+    </div>
+  </div>
+
+  <!-- 음주 다음날 -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px;">
+    <div style="padding:10px 15px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;">🍺 음주 다음날 <span style="font-size:11px;font-weight:400;color:var(--text-light);">해독+수분 우선</span></div>
+    <div style="padding:7px 0;">
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">원칙</span><span style="font-size:12px;flex:1;color:var(--terra);">기름진 해장 NO — 간 부담만 가중</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">아침</span><span style="font-size:12px;flex:1;">꿀물 or 이온음료 + 바나나 1개 (혈당 빠른 회복) + 달걀</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">점심</span><span style="font-size:12px;flex:1;">콩나물국+현미밥 / 미역국+두부 — 나트륨 낮은 국물류</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">저녁</span><span style="font-size:12px;flex:1;">닭가슴살+채소 / 두부찌개 — 단백질로 간 회복 보조</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;background:#F5FAF5;"><span style="font-size:10px;font-weight:700;color:var(--sage-dark);min-width:52px;padding-top:2px;">핵심</span><span style="font-size:12px;flex:1;color:var(--sage-dark);">물 2.5L+ / 비타민C 추가 / 운동은 다음날로 — 음주 후 운동은 근손실</span></div>
+    </div>
+  </div>
+
+  <!-- 야식 대책 (통합) -->
+  <div style="background:#1A1A1A;color:white;border-radius:14px;padding:18px 20px;margin-bottom:10px;">
+    <div style="font-size:14px;font-weight:700;color:#C8A860;margin-bottom:10px;">🌙 야식 대책 — 밤 10시 귀가 후</div>
+    <div style="font-size:13px;line-height:1.85;color:rgba(255,255,255,.85);">
       <strong style="color:#B0D4B0;">✅ 먹어도 되는 것</strong><br>
       닭가슴살 · 삶은달걀 · 두부 · 새우 · 도토리묵 · 해초샐러드 · 오이 · 나또 · 달걀국(국물만)<br><br>
       <strong style="color:#FFB0A0;">❌ 절대 안 되는 것</strong><br>
@@ -575,22 +608,31 @@ const STORAGE_KEY = 'habit_sunyu_2026';
 const TOTAL_DAYS  = 90; // 90일 그리드 표시
 
 const PROTEIN_FOODS = [
-  {name:'닭가슴살 120g', g:27, emoji:'🍗'},
-  {name:'달걀 1개',       g:6,  emoji:'🥚'},
-  {name:'두부 150g',      g:9,  emoji:'🫘'},
-  {name:'새우 100g',      g:19, emoji:'🦐'},
-  {name:'나또 1팩',       g:8,  emoji:'🫙'},
-  {name:'단백질쉐이크',   g:20, emoji:'🥤'},
-  {name:'돼지고기 100g',  g:19, emoji:'🥩'},
-  {name:'소고기 100g',    g:21, emoji:'🥩'},
-  {name:'치즈 1장',       g:5,  emoji:'🧀'},
-  {name:'아몬드브리즈',   g:1,  emoji:'🥛'},
+  {name:'닭가슴살 120g',   g:27, emoji:'🍗'},
+  {name:'달걀 1개',         g:6,  emoji:'🥚'},
+  {name:'두부 150g',        g:9,  emoji:'🫘'},
+  {name:'새우 100g',        g:19, emoji:'🦐'},
+  {name:'나또 1팩',         g:8,  emoji:'🫙'},
+  {name:'단백질쉐이크',     g:20, emoji:'🥤'},
+  {name:'돼지고기 100g',    g:19, emoji:'🥩'},
+  {name:'소고기 100g',      g:21, emoji:'🥩'},
+  {name:'치즈 1장',         g:5,  emoji:'🧀'},
+  {name:'아몬드브리즈',     g:1,  emoji:'🥛'},
+  {name:'연어 100g',        g:25, emoji:'🐟'},
+  {name:'참치캔 1개',       g:22, emoji:'🐠'},
+  {name:'그릭요거트 150g',  g:15, emoji:'🥣'},
+  {name:'명란젓 50g',       g:9,  emoji:'🟠'},
+  {name:'스트링치즈 1개',   g:7,  emoji:'🧀'},
+  {name:'오징어 100g',      g:18, emoji:'🦑'},
+  {name:'견과류 30g',       g:6,  emoji:'🥜'},
+  {name:'무가당 두유 200ml',g:7,  emoji:'🥛'},
 ];
 
 const EXERCISE_HABITS = [
-  {id:'swim', name:'수영 강습 완료',        desc:'화·목 20~21시',     tag:'🏊'},
-  {id:'gym',  name:'헬스 완료',             desc:'18~20시 / 러닝+근력', tag:'🏋️'},
-  {id:'walk', name:'산책 or 걷기 20분+',   desc:'운동 없는 날 대체',  tag:'🚶'},
+  {id:'swim', name:'수영 강습 완료',       desc:'화·목 20~21시',        tag:'🏊'},
+  {id:'gym',  name:'헬스 완료',            desc:'18~20시 / 근력+유산소', tag:'🏋️'},
+  {id:'run',  name:'러닝 30분+',           desc:'야외 or 러닝머신 달리기', tag:'🏃'},
+  {id:'walk', name:'산책 or 걷기 20분+',  desc:'운동 없는 날 대체',     tag:'🚶', noStats:true},
 ];
 const SUPP_HABITS = [
   {id:'s1', name:'아침 공복 — 콜라겐',              desc:'기상 직후 공복에',       tag:'🌅'},
@@ -938,8 +980,8 @@ function renderOverview() {
 
   // Category stats
   const cs=document.getElementById('categoryStats'); cs.innerHTML='';
-  const cats=[{name:'운동',habits:EXERCISE_HABITS},{name:'영양제',habits:SUPP_HABITS},{name:'생활습관',habits:LIFE_HABITS},{name:'뷰티·두피',habits:BEAUTY_HABITS}];
-  const keys=Object.keys(allData);
+  const cats=[{name:'운동',habits:EXERCISE_HABITS.filter(h=>!h.noStats)},{name:'영양제',habits:SUPP_HABITS},{name:'생활습관',habits:LIFE_HABITS},{name:'뷰티·두피',habits:BEAUTY_HABITS}];
+  const keys=Object.keys(allData).filter(k=>{const r=allData[k];return r&&(getDoneHabits(r)>0||r.weight||r.memo);});
   cats.forEach(cat=>{
     let total=0,done=0;
     keys.forEach(k=>{const rec=allData[k];cat.habits.forEach(h=>{total++;if(rec.habits&&rec.habits[h.id])done++;});});
@@ -1019,7 +1061,7 @@ async function saveToday() {
   showToast('✓ 기록이 저장됐어요!');
 }
 
-const ALL_TABS = ['plan','cycle','exercise','diet','night','supp_plan','today','overview','log'];
+const ALL_TABS = ['plan','cycle','exercise','diet','supp_plan','today','overview','log'];
 function showTab(name) {
   ALL_TABS.forEach(id => { const el=document.getElementById('tab-'+id); if(el) el.style.display=(id===name)?'block':'none'; });
   document.querySelectorAll('.tab').forEach(t => { t.classList.toggle('active', t.getAttribute('onclick').includes("'"+name+"'")); });
