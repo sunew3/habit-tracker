@@ -750,7 +750,7 @@ function renderDateNav() {
 
 function renderHeader() {
   if (!START) return;
-  const dn = dayNumber(new Date());
+  const dn = dayNumber(currentDate);
   document.getElementById('headerSub').textContent =
     `시작일 ${toLocalDateStr(START)} · 현재 Day ${Math.max(dn,1)}`;
   const pct = Math.min(Math.round((Math.max(dn-1,0) / TOTAL_DAYS) * 100), 100);
@@ -852,7 +852,10 @@ function updateCounts() {
 function updateGlobalStats() {
   renderHeader();
   const today = new Date(); today.setHours(0,0,0,0);
-  const keys = Object.keys(allData);
+  const keys = Object.keys(allData).filter(k => {
+    const r = allData[k];
+    return r && (getDoneHabits(r) > 0 || r.weight || r.memo);
+  });
   const totalDays = keys.length;
   let streak = 0;
   let d = new Date(today);
@@ -993,7 +996,6 @@ function renderLog() {
 
 // ─── ACTIONS ─────────────────────────
 function changeDay(delta) {
-  saveCurrentInputs();
   currentDate.setDate(currentDate.getDate()+delta);
   renderAll();
 }
