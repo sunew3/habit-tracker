@@ -620,6 +620,11 @@ const MOODS = [
   {val:'bad',   label:'힘듦', emoji:'😞'},
 ];
 
+// ─── 날짜 헬퍼 (UTC 버그 방지) ──────────
+function toLocalDateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
 // ─── 상태 ───────────────────────────
 let START = null;
 let allData = {};
@@ -682,7 +687,7 @@ async function load() {
   // 3. START 날짜 없으면 오늘로 설정 (첫 사용)
   if (!START) {
     START = new Date(); START.setHours(0,0,0,0);
-    const startStr = START.toISOString().slice(0,10);
+    const startStr = toLocalDateStr(START);
     localStorage.setItem(STORAGE_KEY + '_start', startStr);
     if (db) {
       await db.from('habit_logs').upsert({ date: '_meta', data: { start_date: startStr } });
@@ -706,7 +711,7 @@ async function save() {
 }
 
 // ─── 유틸 ────────────────────────────
-function dateKey(d) { return d.toISOString().slice(0,10); }
+function dateKey(d) { return toLocalDateStr(d); }
 function todayData() {
   const k = dateKey(currentDate);
   if (!allData[k]) allData[k] = { weight:'', fat:'', muscle:'', waist:'', water:0, protein:[], habits:{}, mood:'', memo:'' };
@@ -747,7 +752,7 @@ function renderHeader() {
   if (!START) return;
   const dn = dayNumber(new Date());
   document.getElementById('headerSub').textContent =
-    `시작일 ${START.toISOString().slice(0,10)} · 현재 Day ${Math.max(dn,1)}`;
+    `시작일 ${toLocalDateStr(START)} · 현재 Day ${Math.max(dn,1)}`;
   const pct = Math.min(Math.round((Math.max(dn-1,0) / TOTAL_DAYS) * 100), 100);
   document.getElementById('globalProgress').style.width = pct + '%';
   document.getElementById('progressDay').textContent = `Day ${Math.max(dn,1)}`;
