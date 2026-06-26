@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이선유 · 슬림 서머 플랜</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg: #F5F2ED; --surface: #FFFFFF; --surface2: #FAF8F4;
+  --sage: #5C7A5C; --sage-light: #EDF3ED; --sage-dark: #3A5C3A;
+  --gold: #B8933C; --gold-light: #FBF5E4;
+  --terra: #B85C3C; --terra-light: #F7EDE6;
+  --rose: #B87C7C; --rose-light: #F7ECEA;
+  --text: #1E1E1E; --text-mid: #555; --text-light: #999;
+  --border: #E4DDD4; --border-dark: #C8BEB4;
+  --radius: 14px; --radius-sm: 8px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* HEADER */
+.header { background:linear-gradient(135deg,#2A3C2A 0%,#3C5C3A 60%,#4A6B45 100%); padding:32px 20px 28px; position:relative; overflow:hidden; }
+.header::after { content:''; position:absolute; bottom:-40px; right:-40px; width:180px; height:180px; border-radius:50%; background:rgba(184,147,60,.12); }
+.header-tag { font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:rgba(255,255,255,.45); margin-bottom:8px; }
+.header-title { font-family:'DM Serif Display',serif; font-size:26px; color:white; line-height:1.25; margin-bottom:4px; }
+.header-title em { font-style:italic; color:#D4AF60; }
+.header-sub { font-size:12px; color:rgba(255,255,255,.5); margin-bottom:20px; }
+.progress-wrap { background:rgba(255,255,255,.1); border-radius:99px; height:6px; margin-bottom:6px; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,#B8933C,#D4AF60); border-radius:99px; transition:width .4s ease; }
+.progress-label { font-size:11px; color:rgba(255,255,255,.5); display:flex; justify-content:space-between; }
+
+/* SYNC STATUS */
+.sync-bar { background:rgba(0,0,0,.2); padding:5px 20px; display:flex; align-items:center; gap:6px; font-size:11px; color:rgba(255,255,255,.6); }
+.sync-dot { width:6px; height:6px; border-radius:50%; background:#aaa; flex-shrink:0; }
+.sync-dot.synced { background:#6fcf97; }
+.sync-dot.syncing { background:#f2c94c; animation:pulse .8s infinite; }
+.sync-dot.offline { background:#eb5757; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* STATS ROW */
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:0 16px 16px; background:white; border-bottom:1px solid var(--border); }
+.stat-box { text-align:center; padding:12px 4px 10px; }
+.stat-num { font-family:'DM Serif Display',serif; font-size:22px; color:var(--sage-dark); line-height:1; }
+.stat-lab { font-size:10px; color:var(--text-light); margin-top:3px; }
+
+/* TABS */
+.tabs { background:white; border-bottom:1px solid var(--border); display:flex; overflow-x:auto; scrollbar-width:none; padding:0 12px; position:sticky; top:0; z-index:50; }
+.tabs::-webkit-scrollbar { display:none; }
+.tab { padding:12px 14px; font-size:12px; font-weight:500; color:var(--text-light); border:none; background:none; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; transition:all .2s; flex-shrink:0; }
+.tab.active { color:var(--sage-dark); border-bottom-color:var(--sage); }
+
+/* MAIN */
+main { max-width:800px; margin:0 auto; padding:16px 14px 60px; }
+
+/* DATE NAV */
+.date-nav { display:flex; align-items:center; gap:10px; background:white; border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; margin-bottom:14px; }
+.date-nav-btn { width:32px; height:32px; border:1px solid var(--border); border-radius:50%; background:var(--bg); cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; transition:all .15s; flex-shrink:0; }
+.date-nav-btn:hover { background:var(--sage-light); border-color:var(--sage); }
+.date-display { flex:1; text-align:center; }
+.date-main { font-family:'DM Serif Display',serif; font-size:18px; color:var(--text); }
+.date-sub { font-size:11px; color:var(--text-light); margin-top:1px; }
+.date-badge { font-size:10px; font-weight:600; padding:2px 8px; border-radius:99px; flex-shrink:0; }
+
+/* BODY CARD */
+.body-card { background:white; border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; }
+.section-label { font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--text-light); margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.input-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:4px; }
+.input-item { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px 12px; transition:border-color .2s; }
+.input-item:focus-within { border-color:var(--sage); }
+.input-label { font-size:10px; color:var(--text-light); margin-bottom:3px; }
+.input-row { display:flex; align-items:baseline; gap:3px; }
+.input-field { font-family:'DM Serif Display',serif; font-size:20px; color:var(--text); border:none; background:transparent; outline:none; width:100%; min-width:0; }
+.input-unit { font-size:11px; color:var(--text-light); white-space:nowrap; flex-shrink:0; }
+.input-diff { font-size:11px; margin-top:2px; font-weight:500; }
+.diff-up { color:var(--terra); } .diff-down { color:var(--sage-dark); } .diff-same { color:var(--text-light); }
+
+/* WATER */
+.water-track { display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
+.water-btn { width:36px; height:36px; border-radius:50%; border:2px solid var(--border); background:var(--surface2); cursor:pointer; font-size:16px; transition:all .15s; display:flex; align-items:center; justify-content:center; }
+.water-btn.filled { background:#4A90D4; border-color:#3A7AC4; }
+.water-label { font-size:11px; color:var(--text-light); margin-top:6px; display:flex; justify-content:space-between; }
+
+/* HABITS */
+.habit-group { background:white; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:10px; }
+.habit-group-header { padding:12px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.hgh-left { display:flex; align-items:center; gap:8px; }
+.hgh-icon { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+.hgh-title { font-size:13px; font-weight:600; }
+.hgh-count { font-size:11px; font-weight:600; color:var(--sage-dark); background:var(--sage-light); padding:2px 8px; border-radius:99px; }
+.habit-item { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border-bottom:1px solid #F8F5F0; cursor:pointer; transition:background .15s; user-select:none; }
+.habit-item:last-child { border-bottom:none; }
+.habit-item:hover { background:#FAFAF8; }
+.habit-item.checked { background:var(--sage-light); }
+.habit-check { width:20px; height:20px; border-radius:6px; border:2px solid var(--border); background:white; flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center; transition:all .15s; font-size:11px; color:white; }
+.habit-item.checked .habit-check { background:var(--sage); border-color:var(--sage); }
+.habit-info { flex:1; min-width:0; }
+.habit-name { font-size:13px; font-weight:500; line-height:1.4; }
+.habit-item.checked .habit-name { color:var(--sage-dark); text-decoration:line-through; opacity:.7; }
+.habit-desc { font-size:11px; color:var(--text-light); margin-top:1px; }
+
+/* PROTEIN */
+.protein-bar-wrap { margin-top:8px; }
+.protein-bar-track { height:8px; background:#EEE; border-radius:99px; overflow:hidden; margin-bottom:4px; }
+.protein-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--sage),var(--sage-dark)); transition:width .3s ease; }
+.protein-row { display:flex; gap:6px; flex-wrap:wrap; }
+.protein-item { display:flex; align-items:center; gap:5px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:5px 8px; cursor:pointer; transition:all .15s; font-size:12px; }
+.protein-item:hover { border-color:var(--sage); }
+.protein-item.added { background:var(--sage-light); border-color:var(--sage); color:var(--sage-dark); font-weight:500; }
+.protein-item .pi-g { font-size:10px; color:var(--text-light); }
+.protein-item.added .pi-g { color:var(--sage-dark); }
+
+/* MEMO */
+.memo-area { width:100%; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface2); padding:10px 12px; font-family:'DM Sans',sans-serif; font-size:13px; color:var(--text); resize:none; outline:none; line-height:1.6; transition:border-color .2s; min-height:70px; }
+.memo-area:focus { border-color:var(--sage); }
+.memo-area::placeholder { color:var(--text-light); }
+
+/* SAVE BTN */
+.save-btn { width:100%; padding:14px; background:linear-gradient(135deg,var(--sage-dark),var(--sage)); color:white; border:none; border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; margin-top:4px; transition:opacity .2s; letter-spacing:.02em; }
+.save-btn:hover { opacity:.9; }
+.save-btn:disabled { opacity:.5; cursor:not-allowed; }
+.save-toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--sage-dark); color:white; padding:10px 22px; border-radius:99px; font-size:13px; font-weight:500; transition:transform .3s ease; z-index:200; white-space:nowrap; }
+.save-toast.show { transform:translateX(-50%) translateY(0); }
+
+/* OVERVIEW */
+.overview-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+.ov-card { background:white; border:1px solid var(--border); border-radius:var(--radius); padding:14px; }
+.ov-title { font-size:11px; color:var(--text-light); margin-bottom:8px; font-weight:500; }
+.ov-chart-row { display:flex; align-items:flex-end; gap:3px; height:50px; }
+.ov-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; height:100%; justify-content:flex-end; }
+.ov-bar { width:100%; min-height:2px; border-radius:3px; transition:height .3s ease; }
+.ov-bar-lab { font-size:8px; color:var(--text-light); }
+.streak-row { display:flex; gap:3px; flex-wrap:wrap; }
+.streak-dot { width:14px; height:14px; border-radius:3px; background:var(--border); }
+.streak-dot.done { background:var(--sage); }
+.streak-dot.partial { background:var(--gold-light); border:1px solid var(--gold); }
+.streak-dot.today { border:2px solid var(--sage-dark); }
+
+/* LOG TABLE */
+.log-table-wrap { overflow-x:auto; }
+.log-table { width:100%; border-collapse:collapse; font-size:12px; min-width:520px; }
+.log-table th { background:var(--surface2); padding:8px 10px; text-align:center; font-size:10px; font-weight:600; letter-spacing:.06em; color:var(--text-light); text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap; }
+.log-table th:first-child { text-align:left; }
+.log-table td { padding:9px 10px; border-bottom:1px solid #F5F2EE; text-align:center; color:var(--text-mid); }
+.log-table td:first-child { text-align:left; font-weight:500; color:var(--text); }
+.log-table tr:last-child td { border-bottom:none; }
+.log-table tr.today-row td { background:var(--sage-light); }
+.weight-cell { font-weight:600; color:var(--text); }
+.weight-down { color:var(--sage-dark); } .weight-up { color:var(--terra); }
+.empty-cell { color:var(--border); }
+
+/* MOOD */
+.mood-row { display:flex; gap:8px; }
+.mood-btn { flex:1; padding:8px 4px; border:2px solid var(--border); border-radius:var(--radius-sm); background:var(--surface2); cursor:pointer; font-size:18px; text-align:center; transition:all .15s; }
+.mood-btn:hover { border-color:var(--gold); }
+.mood-btn.selected { border-color:var(--gold); background:var(--gold-light); }
+.mood-label { font-size:10px; color:var(--text-light); margin-top:2px; }
+
+/* LOADING */
+.loading-screen { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:999; gap:12px; }
+.loading-spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--sage); border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+@media (max-width:480px) {
+  .input-grid { grid-template-columns:1fr 1fr; }
+  .overview-grid { grid-template-columns:1fr; }
+  .stats-row { grid-template-columns:repeat(4,1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- 로딩 -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-spinner"></div>
+  <div style="font-size:13px;color:var(--text-light);">데이터 불러오는 중...</div>
+</div>
+
+<div class="header">
+  <p class="header-tag">Health & Slim Plan · 2026</p>
+  <h1 class="header-title">이선유의 <em>탄탄 슬림</em><br>데일리 플랜</h1>
+  <p class="header-sub" id="headerSub">시작일 계산 중...</p>
+  <div class="progress-wrap"><div class="progress-fill" id="globalProgress"></div></div>
+  <div class="progress-label">
+    <span id="progressDay">Day 1</span>
+    <span id="progressPct"></span>
+  </div>
+</div>
+
+<div class="sync-bar">
+  <div class="sync-dot" id="syncDot"></div>
+  <span id="syncText">연결 중...</span>
+</div>
+
+<div class="stats-row">
+  <div class="stat-box"><div class="stat-num" id="statStreak">0</div><div class="stat-lab">연속 달성</div></div>
+  <div class="stat-box"><div class="stat-num" id="statTotalDays">0</div><div class="stat-lab">기록 완료</div></div>
+  <div class="stat-box"><div class="stat-num" id="statAvgHabit">0%</div><div class="stat-lab">평균 달성률</div></div>
+  <div class="stat-box"><div class="stat-num" id="statWeight">-</div><div class="stat-lab">최근 체중</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab" onclick="showTab('plan')">📋 핵심 전략</button>
+  <button class="tab" onclick="showTab('cycle')">🌙 생리주기</button>
+  <button class="tab" onclick="showTab('exercise')">🏃 운동</button>
+  <button class="tab" onclick="showTab('diet')">🥗 식단</button>
+  <button class="tab" onclick="showTab('night')">🌙 야식 대책</button>
+  <button class="tab" onclick="showTab('supp_plan')">💊 영양제</button>
+  <button class="tab active" onclick="showTab('today')">✅ 오늘 기록</button>
+  <button class="tab" onclick="showTab('overview')">📊 한눈에 보기</button>
+  <button class="tab" onclick="showTab('log')">📋 전체 로그</button>
+</div>
+
+<!-- PLAN -->
+<div id="tab-plan" style="display:none;">
+<div style="max-width:780px;margin:0 auto;padding:16px 14px 40px;">
+  <div style="background:var(--terra);color:white;border-radius:12px;padding:16px 18px;margin-bottom:14px;">
+    <div style="font-size:12px;opacity:.7;margin-bottom:4px;">⚡ 저녁 운동자 핵심</div>
+    <div style="font-size:16px;font-weight:600;">운동 전 미리 먹기가 야식 차단의 유일한 방법!</div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:10px;">
+    <div style="font-size:14px;font-weight:600;margin-bottom:10px;">🔍 왜 운동해도 안 빠질까?</div>
+    <div style="background:#1A1A1A;color:white;border-radius:10px;padding:15px 16px;font-size:13px;line-height:1.8;">
+      저녁 운동 → 귀가 9~10시 → 배고파서 먹음<br>
+      → <strong style="color:#C8A860;">이때 먹은 탄수화물이 지방으로 직행</strong><br><br>
+      밤에는 인슐린 감수성↓ → 같은 음식도 지방 전환율↑<br>
+      특히 <strong style="color:#FFB0A0;">아랫배(내장지방)</strong>에 먼저 쌓여요.<br>
+      운동으로 태운 칼로리를 귀가 후 다시 채우는 악순환.
+    </div>
+  </div>
+  <div style="background:var(--sage-light);border:1px solid var(--sage);border-left:3px solid var(--sage);border-radius:10px;padding:13px 15px;margin-bottom:10px;color:var(--sage-dark);">
+    <div style="font-size:12px;font-weight:700;margin-bottom:6px;">✅ 핵심 3가지만 지키면 돼요</div>
+    <div style="font-size:12px;line-height:1.85;">
+      1️⃣ <strong>운동 전 미리 먹기</strong> — 귀가 후 배고픔을 없애는 유일한 방법<br>
+      2️⃣ <strong>귀가 후 단백질+채소만</strong> — 탄수화물(밥·빵·면) 없이<br>
+      3️⃣ <strong>취침 2시간 전 금식</strong> — 10시 귀가면 10시 이후는 물만
+    </div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;">
+    <div style="font-size:14px;font-weight:600;margin-bottom:10px;">📊 칼로리 & 목표</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;">
+      <div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px 6px;">
+        <div style="font-size:18px;font-weight:700;color:var(--terra);">1,400</div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:2px;">비운동일</div>
+      </div>
+      <div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px 6px;">
+        <div style="font-size:18px;font-weight:700;color:var(--terra);">1,550</div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:2px;">운동일</div>
+      </div>
+      <div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px 6px;">
+        <div style="font-size:18px;font-weight:700;color:var(--terra);">60g+</div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:2px;">단백질</div>
+      </div>
+      <div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px 6px;">
+        <div style="font-size:18px;font-weight:700;color:var(--terra);">49kg</div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:2px;">목표</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- CYCLE -->
+<div id="tab-cycle" style="display:none;">
+<div style="max-width:780px;margin:0 auto;padding:16px 14px 40px;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:10px;">
+    <div style="display:flex;gap:5px;margin-bottom:12px;overflow-x:auto;">
+      <div style="background:var(--terra-light);color:var(--terra);border-radius:8px;padding:9px 10px;text-align:center;font-size:11px;font-weight:600;flex:1.5;border:2px solid var(--terra);min-width:70px;">🔴 생리기<br><span style="font-size:9px;font-weight:400;">D1~D6</span></div>
+      <div style="background:#EEF7FC;color:#3A7090;border-radius:8px;padding:9px 10px;text-align:center;font-size:11px;font-weight:600;flex:2;min-width:80px;">🌱 난포기<br><span style="font-size:9px;font-weight:400;">D7~D14</span></div>
+      <div style="background:var(--gold-light);color:var(--gold);border-radius:8px;padding:9px 10px;text-align:center;font-size:11px;font-weight:600;flex:.8;min-width:60px;">✨배란<br><span style="font-size:9px;font-weight:400;">D14~D16</span></div>
+      <div style="background:var(--terra-light);color:var(--terra);border-radius:8px;padding:9px 10px;text-align:center;font-size:11px;font-weight:600;flex:2;min-width:80px;">🍂 황체기<br><span style="font-size:9px;font-weight:400;">D17~D28</span></div>
+    </div>
+  </div>
+  <div style="background:#EEF7FC;border:1px solid #B8D8EC;border-left:3px solid #3A7090;border-radius:10px;padding:13px 15px;margin-bottom:10px;color:#1E4860;">
+    <div style="font-size:12px;font-weight:700;margin-bottom:6px;">🌱 난포기 (D7~D14) — 감량 최고 효율</div>
+    <div style="font-size:12px;line-height:1.85;"><ul style="margin-left:14px;">
+      <li><strong>체중 감량 효율 최고조</strong> — 에스트로겐↑ → 지방 분해 쉬워짐</li>
+      <li>헬스 무게 업그레이드 도전. 이 시기가 근력 향상 최적기</li>
+      <li>칼로리 결핍 집중 — 이 2주가 전체 감량의 70%</li>
+      <li>피부 콜라겐 생성 최고조 — 콜라겐 절대 빠뜨리지 말기</li>
+    </ul></div>
+  </div>
+  <div style="background:var(--terra-light);border:1px solid #DEB898;border-left:3px solid var(--terra);border-radius:10px;padding:13px 15px;margin-bottom:10px;color:#7A4A28;">
+    <div style="font-size:12px;font-weight:700;margin-bottom:6px;">🍂 황체기·PMS (D17~D28) — 위험 구간</div>
+    <div style="font-size:12px;line-height:1.85;"><ul style="margin-left:14px;">
+      <li>기초대사량 100~200kcal 자연 상승 — 조금 더 먹어도 OK</li>
+      <li>당 욕구 → 다크초콜릿(72%↑) 2~3조각, 도토리묵, 블루베리</li>
+      <li>붓기 주의 — 나트륨 최소화, 물 충분히</li>
+      <li>마그네슘 꾸준히 → PMS 증상 완화</li>
+    </ul></div>
+  </div>
+</div>
+</div>
+
+<!-- EXERCISE -->
+<div id="tab-exercise" style="display:none;">
+<div style="max-width:780px;margin:0 auto;padding:16px 14px 40px;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:10px;">
+    <div style="font-size:14px;font-weight:600;margin-bottom:10px;">⚡ 저녁 운동 전후 식사 전략</div>
+    <div style="background:#1A1A1A;color:white;border-radius:10px;padding:14px 16px;font-size:12px;line-height:1.85;margin-bottom:8px;">
+      <strong style="color:#B0D4B0;">운동 1~1.5시간 전 (퇴근 직후)</strong><br>
+      고구마 100g + 달걀 1개 <em>or</em> 단백질쉐이크<br>
+      → 운동 에너지 확보 + <strong style="color:#FFD080;">귀가 후 폭식 욕구 차단</strong><br><br>
+      <strong style="color:#B0D4B0;">운동 후 귀가 (밤 9~10시)</strong><br>
+      닭가슴살+해초샐러드 / 두부+오이무침 / 달걀+도토리묵<br>
+      <strong style="color:#FFB0A0;">탄수화물(밥·빵·면) 없이!</strong>
+    </div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:10px;">
+    <div style="font-size:14px;font-weight:600;margin-bottom:10px;">🏋️ 헬스 루틴 50분</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <tr style="background:var(--bg);"><th style="padding:6px 9px;text-align:left;font-size:10px;color:var(--text-light);font-weight:600;">운동</th><th style="padding:6px 9px;text-align:left;font-size:10px;color:var(--text-light);font-weight:600;">세트·횟수</th><th style="padding:6px 9px;text-align:left;font-size:10px;color:var(--text-light);font-weight:600;">목적</th></tr>
+      <tr><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;font-weight:600;">러닝머신 경사 3~5도</td><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;color:var(--text-mid);">20분 빠른 걷기</td><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;color:var(--text-mid);">지방연소</td></tr>
+      <tr><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;font-weight:600;">덤벨 숄더 프레스</td><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;color:var(--text-mid);">3×12회 (3~4kg)</td><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;color:var(--sage-dark);">✨ 일자어깨</td></tr>
+      <tr><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;font-weight:600;">덤벨 레터럴 레이즈</td><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;color:var(--text-mid);">3×15회 (2~3kg)</td><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;color:var(--sage-dark);">✨ 어깨 라인</td></tr>
+      <tr><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;font-weight:600;">트라이셉스 킥백</td><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;color:var(--text-mid);">3×15회 (3kg)</td><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;color:var(--text-mid);">팔뚝살</td></tr>
+      <tr><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;font-weight:600;">랫풀다운</td><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;color:var(--text-mid);">3×12회</td><td style="padding:8px 9px;border-bottom:1px solid #F5F2EE;color:var(--text-mid);">등+어깨</td></tr>
+      <tr><td style="padding:8px 9px;font-weight:600;">스쿼트</td><td style="padding:8px 9px;color:var(--text-mid);">3×15회</td><td style="padding:8px 9px;color:var(--text-mid);">기초대사량↑</td></tr>
+    </table>
+    <div style="background:var(--sage-light);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:12px;color:var(--sage-dark);">
+      💡 아령 1kg → 3~4kg 필수 업그레이드. 마지막 2~3회가 힘들어야 효과 있어요.
+    </div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;">
+    <div style="font-size:14px;font-weight:600;margin-bottom:8px;">🧘 경추 스트레칭 (매일 5분)</div>
+    <div style="font-size:13px;color:var(--text-mid);line-height:1.8;">
+      1. 턱 당기기(chin tuck) — 10초×10회<br>
+      2. 목 옆 기울이기 — 양쪽 20초<br>
+      3. 어깨 으쓱 후 내리기 — 10회<br>
+      4. 문틀 잡고 가슴 열기 — 30초<br>
+      <em style="color:var(--text-light);font-size:11px;">아침 핸드폰 보기 전에 먼저!</em>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- DIET -->
+<div id="tab-diet" style="display:none;">
+<div style="max-width:780px;margin:0 auto;padding:16px 14px 40px;">
+  <div style="background:var(--sage-light);border:1px solid var(--sage);border-left:3px solid var(--sage);border-radius:10px;padding:13px 15px;margin-bottom:10px;color:var(--sage-dark);">
+    <div style="font-size:12px;font-weight:700;margin-bottom:6px;">📌 식단 4원칙</div>
+    <div style="font-size:12px;line-height:1.85;"><ul style="margin-left:14px;">
+      <li><strong>운동 전 미리 먹기</strong> — 고구마+달걀 or 쉐이크</li>
+      <li><strong>귀가 후 탄수화물 0</strong> — 단백질+채소만</li>
+      <li><strong>점심을 가장 든든하게</strong></li>
+      <li><strong>도토리묵·해초샐러드</strong> — 야식 최고 대체재</li>
+    </ul></div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px;">
+    <div style="padding:10px 15px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;">운동일 식단</div>
+    <div style="padding:7px 0;">
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">아침</span><span style="font-size:12px;flex:1;">나또+현미밥 70g / 달걀+김치 / 단백질쉐이크</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--text-light);min-width:52px;padding-top:2px;">점심</span><span style="font-size:12px;flex:1;">비빔밥(고기추가) / 제육볶음+쌈채소 / 닭갈비(사리빼고)</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;border-bottom:1px solid #F7F4EF;"><span style="font-size:10px;font-weight:700;color:var(--terra);min-width:52px;padding-top:2px;">운동 전</span><span style="font-size:12px;flex:1;"><strong>고구마 100g + 달걀 1개</strong> or 단백질쉐이크</span></div>
+      <div style="display:flex;gap:8px;padding:7px 15px;background:#FFF5F5;"><span style="font-size:10px;font-weight:700;color:var(--sage-dark);min-width:52px;padding-top:2px;">귀가 후</span><span style="font-size:12px;flex:1;color:var(--sage-dark);"><strong>단백질+채소만</strong> — 닭가슴살+해초샐러드 / 두부+오이 / 달걀+도토리묵</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- NIGHT -->
+<div id="tab-night" style="display:none;">
+<div style="max-width:780px;margin:0 auto;padding:16px 14px 40px;">
+  <div style="background:#1A1A1A;color:white;border-radius:14px;padding:18px 20px;margin-bottom:12px;">
+    <div style="font-size:16px;font-weight:700;color:#C8A860;margin-bottom:10px;">밤 10시 귀가 후</div>
+    <div style="font-size:13px;line-height:1.85;color:rgba(255,255,255,.8);">
+      <strong style="color:#B0D4B0;">✅ 먹어도 되는 것</strong><br>
+      닭가슴살 · 삶은달걀 · 두부 · 새우 · 도토리묵 · 해초샐러드 · 오이 · 나또 · 달걀국(국물만)<br><br>
+      <strong style="color:#FFB0A0;">❌ 절대 안 되는 것</strong><br>
+      밥 · 빵 · 면 · 떡 · 과자 · 라면 · 과일(당분) · 시리얼
+    </div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;">
+    <div style="font-size:14px;font-weight:600;margin-bottom:10px;">🥣 5분 야식 대체 레시피</div>
+    <div style="font-size:13px;color:var(--text-mid);line-height:1.85;">
+      <strong>① 도토리묵 무침</strong> — 묵+오이+간장+참기름+통깨. 50kcal<br>
+      <strong>② 해초샐러드+닭가슴살</strong> — 전자레인지 3분+레몬즙. 단백질 27g<br>
+      <strong>③ 달걀+오이</strong> — 삶은달걀+오이+소금. 100kcal<br>
+      <strong>④ 두부 냉채</strong> — 두부+오이+간장+참기름. 2분. 150kcal<br>
+      <strong>⑤ 나또+김</strong> — 나또+조미김 2장. 밥 없이. 80kcal
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SUPPLEMENT -->
+<div id="tab-supp_plan" style="display:none;">
+<div style="max-width:780px;margin:0 auto;padding:16px 14px 40px;">
+  <div style="margin-bottom:16px;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:7px;">🌅 아침 공복</div>
+    <div style="display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;">
+      <div style="font-size:18px;">🦴</div>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;">콜라겐 3g</div><div style="font-size:11px;color:var(--text-light);">기상 직후 공복. 아미노산 경쟁 없이 흡수 최대</div></div>
+      <div style="background:var(--sage-light);color:var(--sage-dark);font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;">공복 필수</div>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:7px;">☀️ 점심 식후</div>
+    <div style="display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:5px;">
+      <div style="font-size:18px;">🍋</div>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;">비타민C 3,000mg</div><div style="font-size:11px;color:var(--text-light);">항산화 + 콜라겐 합성 보조</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:5px;">
+      <div style="font-size:18px;">☀️</div>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;">비타민D3 4,000IU</div><div style="font-size:11px;color:var(--text-light);">지방 식사 후 필수 — 지용성이라 공복 흡수 안됨</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;">
+      <div style="font-size:18px;">🐟</div>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;">오메가3 (EPA+DHA 900mg)</div><div style="font-size:11px;color:var(--text-light);">LDL 개선 + 항염 + 피부 장벽</div></div>
+      <div style="background:var(--gold-light);color:#7A5810;font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;">LDL 개선</div>
+    </div>
+  </div>
+  <div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:7px;">🌙 저녁 식후</div>
+    <div style="display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;">
+      <div style="font-size:18px;">💊</div>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;">마그네슘 (글루콘산 20ml)</div><div style="font-size:11px;color:var(--text-light);">근육 이완 + 수면 질 개선 + 생리통 완화</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<main>
+
+<!-- TODAY -->
+<div id="tab-today">
+  <div class="date-nav">
+    <button class="date-nav-btn" onclick="changeDay(-1)">‹</button>
+    <div class="date-display">
+      <div class="date-main" id="dateMain"></div>
+      <div class="date-sub" id="dateSub"></div>
+    </div>
+    <span class="date-badge" id="dateBadge"></span>
+    <button class="date-nav-btn" onclick="changeDay(1)">›</button>
+  </div>
+
+  <div class="body-card">
+    <div class="section-label">⚖️ 체중 & 체성분</div>
+    <div class="input-grid">
+      <div class="input-item">
+        <div class="input-label">체중</div>
+        <div class="input-row"><input class="input-field" id="inputWeight" type="number" step="0.1" placeholder="입력"><span class="input-unit">kg</span></div>
+        <div class="input-diff" id="diffWeight"></div>
+      </div>
+      <div class="input-item">
+        <div class="input-label">체지방률</div>
+        <div class="input-row"><input class="input-field" id="inputFat" type="number" step="0.1" placeholder="입력"><span class="input-unit">%</span></div>
+        <div class="input-diff" id="diffFat"></div>
+      </div>
+      <div class="input-item">
+        <div class="input-label">골격근량</div>
+        <div class="input-row"><input class="input-field" id="inputMuscle" type="number" step="0.1" placeholder="입력"><span class="input-unit">kg</span></div>
+      </div>
+      <div class="input-item">
+        <div class="input-label">허리둘레</div>
+        <div class="input-row"><input class="input-field" id="inputWaist" type="number" step="0.1" placeholder="입력"><span class="input-unit">cm</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="body-card">
+    <div class="section-label">💧 물 섭취량 <span style="font-size:11px;font-weight:400;color:var(--text-light);margin-left:4px;">목표 2L (컵 1개 = 250ml)</span></div>
+    <div class="water-track" id="waterTrack"></div>
+    <div class="water-label"><span id="waterCount">0 / 8컵</span><span id="waterMl">0ml / 2,000ml</span></div>
+  </div>
+
+  <div class="body-card">
+    <div class="section-label">🥩 단백질 섭취 <span style="font-size:11px;font-weight:400;color:var(--text-light);margin-left:4px;">목표 55~60g</span></div>
+    <div class="protein-bar-wrap">
+      <div class="protein-bar-track"><div class="protein-bar-fill" id="proteinBar" style="width:0%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-light);margin-bottom:8px;">
+        <span id="proteinTotal">0g</span><span>목표 60g</span>
+      </div>
+    </div>
+    <div class="protein-row" id="proteinItems"></div>
+  </div>
+
+  <div class="habit-group">
+    <div class="habit-group-header">
+      <div class="hgh-left"><div class="hgh-icon" style="background:#EEF7FC;">🏃</div><div class="hgh-title">운동</div></div>
+      <div class="hgh-count" id="exCount">0/3</div>
+    </div>
+    <div id="exerciseHabits"></div>
+  </div>
+
+  <div class="habit-group">
+    <div class="habit-group-header">
+      <div class="hgh-left"><div class="hgh-icon" style="background:var(--gold-light);">💊</div><div class="hgh-title">영양제</div></div>
+      <div class="hgh-count" id="suppCount">0/4</div>
+    </div>
+    <div id="suppHabits"></div>
+  </div>
+
+  <div class="habit-group">
+    <div class="habit-group-header">
+      <div class="hgh-left"><div class="hgh-icon" style="background:var(--sage-light);">🌿</div><div class="hgh-title">생활습관</div></div>
+      <div class="hgh-count" id="lifeCount">0/7</div>
+    </div>
+    <div id="lifeHabits"></div>
+  </div>
+
+  <div class="habit-group">
+    <div class="habit-group-header">
+      <div class="hgh-left"><div class="hgh-icon" style="background:var(--rose-light);">✨</div><div class="hgh-title">뷰티·두피</div></div>
+      <div class="hgh-count" id="beautyCount">0/3</div>
+    </div>
+    <div id="beautyHabits"></div>
+  </div>
+
+  <div class="body-card">
+    <div class="section-label">🌈 오늘 컨디션</div>
+    <div class="mood-row" id="moodRow"></div>
+  </div>
+
+  <div class="body-card">
+    <div class="section-label">📝 오늘의 메모</div>
+    <textarea class="memo-area" id="memoInput" placeholder="오늘 느낀 점, 먹은 것, 특이사항 등 자유롭게 기록해요..."></textarea>
+  </div>
+
+  <button class="save-btn" id="saveBtn" onclick="saveToday()">오늘 기록 저장 💾</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="tab-overview" style="display:none;">
+  <div class="body-card">
+    <div class="section-label">📅 90일 달성 현황</div>
+    <div class="streak-row" id="streakDots"></div>
+    <div style="display:flex;gap:12px;margin-top:10px;font-size:11px;color:var(--text-light);">
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--sage);margin-right:4px;vertical-align:middle;"></span>80%+ 달성</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--gold-light);border:1px solid var(--gold);margin-right:4px;vertical-align:middle;"></span>50~79%</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--border);margin-right:4px;vertical-align:middle;"></span>미기록</span>
+    </div>
+  </div>
+  <div class="overview-grid">
+    <div class="ov-card"><div class="ov-title">📉 체중 변화 (최근 14일)</div><div class="ov-chart-row" id="weightChart"></div></div>
+    <div class="ov-card"><div class="ov-title">💧 물 섭취 (최근 14일)</div><div class="ov-chart-row" id="waterChart"></div></div>
+  </div>
+  <div class="body-card">
+    <div class="section-label">🏆 항목별 달성률</div>
+    <div id="categoryStats"></div>
+  </div>
+  <div class="body-card">
+    <div class="section-label">📊 주간 요약</div>
+    <div id="weekSummary"></div>
+  </div>
+</div>
+
+<!-- LOG -->
+<div id="tab-log" style="display:none;">
+  <div class="body-card">
+    <div class="section-label">📋 전체 기록 로그</div>
+    <div class="log-table-wrap">
+      <table class="log-table" id="logTable">
+        <thead><tr><th>날짜</th><th>Day</th><th>체중</th><th>체지방%</th><th>물</th><th>운동</th><th>영양제</th><th>달성률</th></tr></thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<div class="save-toast" id="toast">✓ 저장됐어요!</div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ① 여기에 Supabase 정보를 입력하세요
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const SUPABASE_URL      = 'https://sribivksnarymdkiuvya.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaWJpdmtzbmFyeW1ka2l1dnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzNDU1ODUsImV4cCI6MjA5NzkyMTU4NX0.k83dYxqD621YtfhSzuXJZ0MenVAH8cHxUAQy4YxaVms';
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const STORAGE_KEY = 'habit_sunyu_2026';
+const TOTAL_DAYS  = 90; // 90일 그리드 표시
+
+const PROTEIN_FOODS = [
+  {name:'닭가슴살 120g', g:27, emoji:'🍗'},
+  {name:'달걀 1개',       g:6,  emoji:'🥚'},
+  {name:'두부 150g',      g:9,  emoji:'🫘'},
+  {name:'새우 100g',      g:19, emoji:'🦐'},
+  {name:'나또 1팩',       g:8,  emoji:'🫙'},
+  {name:'단백질쉐이크',   g:20, emoji:'🥤'},
+  {name:'돼지고기 100g',  g:19, emoji:'🥩'},
+  {name:'소고기 100g',    g:21, emoji:'🥩'},
+  {name:'치즈 1장',       g:5,  emoji:'🧀'},
+  {name:'아몬드브리즈',   g:1,  emoji:'🥛'},
+];
+
+const EXERCISE_HABITS = [
+  {id:'swim', name:'수영 강습 완료',        desc:'화·목 20~21시',     tag:'🏊'},
+  {id:'gym',  name:'헬스 완료',             desc:'18~20시 / 러닝+근력', tag:'🏋️'},
+  {id:'walk', name:'산책 or 걷기 20분+',   desc:'운동 없는 날 대체',  tag:'🚶'},
+];
+const SUPP_HABITS = [
+  {id:'s1', name:'아침 공복 — 콜라겐',              desc:'기상 직후 공복에',       tag:'🌅'},
+  {id:'s2', name:'점심 후 — 비타민C + D + 오메가3', desc:'점심 식사 후 함께',      tag:'☀️'},
+  {id:'s3', name:'저녁 후 — 마그네슘',              desc:'저녁 식사 후 or 운동 후', tag:'🌙'},
+  {id:'s4', name:'단백질 셰이크',                   desc:'운동 후 30분 내',        tag:'🥤'},
+];
+const LIFE_HABITS = [
+  {id:'l1', name:'물 2L 달성',             desc:'하루 8컵 목표',           tag:'💧'},
+  {id:'l2', name:'저녁 탄수화물 절반 줄이기', desc:'7시 이후 단백질+채소 위주', tag:'🥗'},
+  {id:'l3', name:'취침 전 스마트폰 30분 끊기', desc:'수면 질 = NK세포 회복',  tag:'📵'},
+  {id:'l4', name:'11시 이전 취침',         desc:'7시간 이상 수면 목표',     tag:'🌙'},
+  {id:'l5', name:'아침 경추 스트레칭 5분', desc:'chin tuck·목 기울이기',   tag:'🧘'},
+  {id:'l6', name:'나트륨 줄이기',          desc:'소금·간장·젓갈 최소화',   tag:'🧂'},
+  {id:'l7', name:'포화지방 줄이기',        desc:'LDL 개선 핵심',           tag:'🥩'},
+];
+const BEAUTY_HABITS = [
+  {id:'b1', name:'두피 마사지 3~5분',     desc:'취침 전 원형 마사지',     tag:'🪮'},
+  {id:'b2', name:'세안 후 3분 내 보습',   desc:'피부 건조 방지 핵심',     tag:'✨'},
+  {id:'b3', name:'커피 후 물로 입 헹구기', desc:'치아 착색 방지',         tag:'🦷'},
+];
+const MOODS = [
+  {val:'great', label:'최고', emoji:'😄'},
+  {val:'good',  label:'좋음', emoji:'🙂'},
+  {val:'okay',  label:'보통', emoji:'😐'},
+  {val:'tired', label:'피곤', emoji:'😴'},
+  {val:'bad',   label:'힘듦', emoji:'😞'},
+];
+
+// ─── 상태 ───────────────────────────
+let START = null;
+let allData = {};
+let currentDate = new Date(); currentDate.setHours(0,0,0,0);
+let db = null;
+
+// ─── Supabase 초기화 ─────────────────
+if (SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
+  const { createClient } = supabase;
+  db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+// ─── 동기화 상태 표시 ────────────────
+function setSyncStatus(status, msg) {
+  const dot  = document.getElementById('syncDot');
+  const text = document.getElementById('syncText');
+  dot.className = 'sync-dot ' + status;
+  const msgs = { synced:'클라우드 동기화 완료', syncing:'동기화 중...', offline:'오프라인 (로컬 저장)', local:'로컬 저장만 사용 중 (Supabase 미설정)' };
+  text.textContent = msg || msgs[status] || status;
+}
+
+// ─── 데이터 로드 (비동기) ────────────
+async function load() {
+  // 1. localStorage 캐시 먼저 (빠른 렌더링)
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    allData = raw ? JSON.parse(raw) : {};
+    const startStr = localStorage.getItem(STORAGE_KEY + '_start');
+    if (startStr) { START = new Date(startStr); START.setHours(0,0,0,0); }
+  } catch(e) { allData = {}; }
+
+  // 2. Supabase 동기화
+  if (db) {
+    try {
+      setSyncStatus('syncing');
+      const { data, error } = await db.from('habit_logs').select('*');
+      if (!error && data) {
+        allData = {};
+        data.forEach(row => {
+          if (row.date === '_meta') {
+            START = new Date(row.data.start_date);
+            START.setHours(0,0,0,0);
+            localStorage.setItem(STORAGE_KEY + '_start', row.data.start_date);
+          } else {
+            allData[row.date] = row.data;
+          }
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
+        setSyncStatus('synced');
+      } else {
+        setSyncStatus('offline');
+      }
+    } catch(e) {
+      setSyncStatus('offline');
+    }
+  } else {
+    setSyncStatus('local');
+  }
+
+  // 3. START 날짜 없으면 오늘로 설정 (첫 사용)
+  if (!START) {
+    START = new Date(); START.setHours(0,0,0,0);
+    const startStr = START.toISOString().slice(0,10);
+    localStorage.setItem(STORAGE_KEY + '_start', startStr);
+    if (db) {
+      await db.from('habit_logs').upsert({ date: '_meta', data: { start_date: startStr } });
+    }
+  }
+}
+
+// ─── 데이터 저장 (비동기) ────────────
+async function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
+  if (db) {
+    const k = dateKey(currentDate);
+    try {
+      setSyncStatus('syncing');
+      await db.from('habit_logs').upsert({ date: k, data: allData[k] });
+      setSyncStatus('synced');
+    } catch(e) {
+      setSyncStatus('offline');
+    }
+  }
+}
+
+// ─── 유틸 ────────────────────────────
+function dateKey(d) { return d.toISOString().slice(0,10); }
+function todayData() {
+  const k = dateKey(currentDate);
+  if (!allData[k]) allData[k] = { weight:'', fat:'', muscle:'', waist:'', water:0, protein:[], habits:{}, mood:'', memo:'' };
+  return allData[k];
+}
+function showToast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg;
+  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500);
+}
+function getTotalHabits() { return EXERCISE_HABITS.length + SUPP_HABITS.length + LIFE_HABITS.length + BEAUTY_HABITS.length; }
+function getDoneHabits(td) {
+  return [...EXERCISE_HABITS,...SUPP_HABITS,...LIFE_HABITS,...BEAUTY_HABITS].filter(h=>td.habits&&td.habits[h.id]).length;
+}
+function dayNumber(d) {
+  if (!START) return 1;
+  return Math.round((d - START) / 86400000) + 1;
+}
+
+// ─── 렌더 ────────────────────────────
+function renderDateNav() {
+  const days = ['일','월','화','수','목','금','토'];
+  const d = currentDate;
+  const dn = dayNumber(d);
+  document.getElementById('dateMain').textContent =
+    `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} (${days[d.getDay()]})`;
+  const isToday = dateKey(d) === dateKey(new Date());
+  document.getElementById('dateSub').textContent = isToday ? '오늘' : '';
+  const badge = document.getElementById('dateBadge');
+  if (dn >= 1) {
+    badge.textContent = `Day ${dn}`;
+    badge.style.cssText = 'background:var(--sage-light);color:var(--sage-dark);font-size:10px;font-weight:600;padding:3px 9px;border-radius:99px;';
+  } else {
+    badge.textContent = '';
+  }
+}
+
+function renderHeader() {
+  if (!START) return;
+  const dn = dayNumber(new Date());
+  document.getElementById('headerSub').textContent =
+    `시작일 ${START.toISOString().slice(0,10)} · 현재 Day ${Math.max(dn,1)}`;
+  const pct = Math.min(Math.round((Math.max(dn-1,0) / TOTAL_DAYS) * 100), 100);
+  document.getElementById('globalProgress').style.width = pct + '%';
+  document.getElementById('progressDay').textContent = `Day ${Math.max(dn,1)}`;
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+function renderBody() {
+  const td = todayData();
+  document.getElementById('inputWeight').value  = td.weight  || '';
+  document.getElementById('inputFat').value     = td.fat     || '';
+  document.getElementById('inputMuscle').value  = td.muscle  || '';
+  document.getElementById('inputWaist').value   = td.waist   || '';
+  const prev = getPrevData();
+  ['Weight','Fat'].forEach(k => {
+    const el = document.getElementById('diff'+k);
+    const cur = parseFloat(td[k.toLowerCase()]);
+    const pre = prev ? parseFloat(prev[k.toLowerCase()]) : NaN;
+    if (!isNaN(cur) && !isNaN(pre)) {
+      const d = (cur - pre).toFixed(1);
+      const unit = k === 'Weight' ? 'kg' : '%';
+      if (d > 0)      el.innerHTML = `<span class="diff-up">▲ ${d}${unit}</span>`;
+      else if (d < 0) el.innerHTML = `<span class="diff-down">▼ ${Math.abs(d)}${unit}</span>`;
+      else            el.innerHTML = `<span class="diff-same">→ 변화없음</span>`;
+    } else { el.innerHTML = ''; }
+  });
+}
+
+function getPrevData() {
+  const prev = new Date(currentDate); prev.setDate(prev.getDate()-1);
+  return allData[dateKey(prev)];
+}
+
+function renderWater() {
+  const td = todayData();
+  const wrap = document.getElementById('waterTrack'); wrap.innerHTML = '';
+  for (let i = 0; i < 8; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'water-btn' + (i < td.water ? ' filled' : '');
+    btn.textContent = i < td.water ? '💧' : '○';
+    btn.onclick = () => { td.water = (td.water === i+1 ? i : i+1); renderWater(); updateCounts(); };
+    wrap.appendChild(btn);
+  }
+  document.getElementById('waterCount').textContent = `${td.water} / 8컵`;
+  document.getElementById('waterMl').textContent    = `${td.water*250}ml / 2,000ml`;
+}
+
+function renderProtein() {
+  const td = todayData();
+  const wrap = document.getElementById('proteinItems'); wrap.innerHTML = '';
+  const total = td.protein.reduce((s,f) => { const found = PROTEIN_FOODS.find(p=>p.name===f); return s+(found?found.g:0); }, 0);
+  PROTEIN_FOODS.forEach(food => {
+    const added = td.protein.includes(food.name);
+    const el = document.createElement('div');
+    el.className = 'protein-item' + (added ? ' added' : '');
+    el.innerHTML = `${food.emoji} ${food.name} <span class="pi-g">+${food.g}g</span>`;
+    el.onclick = () => { if(added) td.protein=td.protein.filter(f=>f!==food.name); else td.protein.push(food.name); renderProtein(); updateCounts(); };
+    wrap.appendChild(el);
+  });
+  const pct = Math.min((total/60)*100,100);
+  document.getElementById('proteinBar').style.width = pct + '%';
+  document.getElementById('proteinTotal').textContent = total + 'g';
+}
+
+function renderHabits(containerId, habits, countId) {
+  const td = todayData();
+  const wrap = document.getElementById(containerId); wrap.innerHTML = '';
+  habits.forEach(h => {
+    const checked = td.habits[h.id] || false;
+    const el = document.createElement('div');
+    el.className = 'habit-item' + (checked ? ' checked' : '');
+    el.innerHTML = `<div class="habit-check">${checked?'✓':''}</div><div class="habit-info"><div class="habit-name">${h.tag} ${h.name}</div><div class="habit-desc">${h.desc}</div></div>`;
+    el.onclick = () => { td.habits[h.id] = !td.habits[h.id]; renderHabits(containerId, habits, countId); updateCounts(); };
+    wrap.appendChild(el);
+  });
+}
+
+function renderMood() {
+  const td = todayData();
+  const row = document.getElementById('moodRow'); row.innerHTML = '';
+  MOODS.forEach(m => {
+    const el = document.createElement('div');
+    el.className = 'mood-btn' + (td.mood === m.val ? ' selected' : '');
+    el.innerHTML = `<div>${m.emoji}</div><div class="mood-label">${m.label}</div>`;
+    el.onclick = () => { td.mood = m.val; renderMood(); };
+    row.appendChild(el);
+  });
+}
+
+function updateCounts() {
+  const td = todayData();
+  document.getElementById('exCount').textContent     = `${EXERCISE_HABITS.filter(h=>td.habits[h.id]).length}/${EXERCISE_HABITS.length}`;
+  document.getElementById('suppCount').textContent   = `${SUPP_HABITS.filter(h=>td.habits[h.id]).length}/${SUPP_HABITS.length}`;
+  document.getElementById('lifeCount').textContent   = `${LIFE_HABITS.filter(h=>td.habits[h.id]).length}/${LIFE_HABITS.length}`;
+  document.getElementById('beautyCount').textContent = `${BEAUTY_HABITS.filter(h=>td.habits[h.id]).length}/${BEAUTY_HABITS.length}`;
+}
+
+function updateGlobalStats() {
+  renderHeader();
+  const today = new Date(); today.setHours(0,0,0,0);
+  const keys = Object.keys(allData);
+  const totalDays = keys.length;
+  let streak = 0;
+  let d = new Date(today);
+  while(true) {
+    const k = dateKey(d), rec = allData[k];
+    if (!rec || getDoneHabits(rec)/getTotalHabits() < 0.5) break;
+    streak++; d.setDate(d.getDate()-1);
+  }
+  let sumPct = 0;
+  keys.forEach(k => { sumPct += getDoneHabits(allData[k]) / getTotalHabits() * 100; });
+  const avgPct = totalDays ? Math.round(sumPct/totalDays) : 0;
+  let latestW = '-';
+  for(let i=0;i<14;i++) { const dd=new Date(today); dd.setDate(dd.getDate()-i); const r=allData[dateKey(dd)]; if(r&&r.weight){latestW=r.weight+'kg';break;} }
+  document.getElementById('statStreak').textContent   = streak+'일';
+  document.getElementById('statTotalDays').textContent = totalDays+'일';
+  document.getElementById('statAvgHabit').textContent  = avgPct+'%';
+  document.getElementById('statWeight').textContent    = latestW;
+}
+
+function renderAll() {
+  renderDateNav();
+  renderBody();
+  renderWater();
+  renderProtein();
+  renderHabits('exerciseHabits', EXERCISE_HABITS, 'exCount');
+  renderHabits('suppHabits',     SUPP_HABITS,     'suppCount');
+  renderHabits('lifeHabits',     LIFE_HABITS,     'lifeCount');
+  renderHabits('beautyHabits',   BEAUTY_HABITS,   'beautyCount');
+  renderMood();
+  updateCounts();
+  document.getElementById('memoInput').value = todayData().memo || '';
+  updateGlobalStats();
+}
+
+// ─── OVERVIEW ────────────────────────
+function renderOverview() {
+  // Streak dots (90일)
+  const sdWrap = document.getElementById('streakDots'); sdWrap.innerHTML = '';
+  if (!START) return;
+  for (let i=0;i<TOTAL_DAYS;i++) {
+    const d = new Date(START); d.setDate(d.getDate()+i);
+    const k = dateKey(d), rec = allData[k];
+    const isToday = k === dateKey(new Date());
+    const dot = document.createElement('div');
+    dot.className = 'streak-dot';
+    if (rec) {
+      const pct = getDoneHabits(rec)/getTotalHabits();
+      if (pct >= 0.8) dot.classList.add('done');
+      else if (pct >= 0.5) dot.classList.add('partial');
+    }
+    if (isToday) dot.classList.add('today');
+    dot.title = `${d.getMonth()+1}/${d.getDate()} Day${i+1}`;
+    sdWrap.appendChild(dot);
+  }
+
+  // Weight & Water chart (최근 14일)
+  const today = new Date(); today.setHours(0,0,0,0);
+  const weights=[], waters=[];
+  for (let i=13;i>=0;i--) { const d=new Date(today); d.setDate(d.getDate()-i); const r=allData[dateKey(d)]; weights.push(r&&r.weight?parseFloat(r.weight):null); waters.push(r?r.water:0); }
+  const validW = weights.filter(v=>v!==null);
+  const minW = validW.length?Math.min(...validW)-0.5:48, maxW=validW.length?Math.max(...validW)+0.5:52;
+  const wc = document.getElementById('weightChart'); wc.innerHTML='';
+  weights.forEach((w,i)=>{
+    const wrap=document.createElement('div'); wrap.className='ov-bar-wrap';
+    const h=w!==null?Math.round(((w-minW)/(maxW-minW||1))*44)+4:4;
+    const bar=document.createElement('div'); bar.className='ov-bar'; bar.style.height=h+'px';
+    bar.style.background=w!==null?(w>50?'var(--terra)':'var(--sage)'):'var(--border)';
+    const lab=document.createElement('div'); lab.className='ov-bar-lab'; lab.textContent=14-i;
+    wrap.appendChild(bar); wrap.appendChild(lab); wc.appendChild(wrap);
+  });
+  const wtc=document.getElementById('waterChart'); wtc.innerHTML='';
+  waters.forEach((cups,i)=>{
+    const wrap=document.createElement('div'); wrap.className='ov-bar-wrap';
+    const h=cups?Math.round((cups/8)*44)+2:2;
+    const bar=document.createElement('div'); bar.className='ov-bar'; bar.style.height=h+'px';
+    bar.style.background=cups>=8?'#4A90D4':cups>=5?'#7AB8E8':'var(--border)';
+    const lab=document.createElement('div'); lab.className='ov-bar-lab'; lab.textContent=14-i;
+    wrap.appendChild(bar); wrap.appendChild(lab); wtc.appendChild(wrap);
+  });
+
+  // Category stats
+  const cs=document.getElementById('categoryStats'); cs.innerHTML='';
+  const cats=[{name:'운동',habits:EXERCISE_HABITS},{name:'영양제',habits:SUPP_HABITS},{name:'생활습관',habits:LIFE_HABITS},{name:'뷰티·두피',habits:BEAUTY_HABITS}];
+  const keys=Object.keys(allData);
+  cats.forEach(cat=>{
+    let total=0,done=0;
+    keys.forEach(k=>{const rec=allData[k];cat.habits.forEach(h=>{total++;if(rec.habits&&rec.habits[h.id])done++;});});
+    const pct=total?Math.round(done/total*100):0;
+    cs.innerHTML+=`<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="font-weight:500;">${cat.name}</span><span style="color:var(--sage-dark);font-weight:600;">${pct}%</span></div><div style="height:6px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:var(--sage);border-radius:99px;transition:width .4s;"></div></div></div>`;
+  });
+
+  // Week summary (최근 4주)
+  const ws=document.getElementById('weekSummary'); ws.innerHTML='';
+  for(let w=3;w>=0;w--){
+    const wStart=new Date(today); wStart.setDate(wStart.getDate()-w*7-6);
+    const wEnd=new Date(today); wEnd.setDate(wEnd.getDate()-w*7);
+    let totalH=0,doneH=0,loggedDays=0;
+    for(let i=0;i<7;i++){
+      const d=new Date(wStart); d.setDate(d.getDate()+i);
+      const rec=allData[dateKey(d)];
+      if(rec){loggedDays++;doneH+=getDoneHabits(rec);totalH+=getTotalHabits();}
+    }
+    const pct=totalH?Math.round(doneH/totalH*100):0;
+    const label=`${wStart.getMonth()+1}/${wStart.getDate()}~${wEnd.getMonth()+1}/${wEnd.getDate()}`;
+    ws.innerHTML+=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><span style="font-size:12px;color:var(--text-mid);min-width:90px;">${label}</span><div style="flex:1;height:8px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:var(--sage);border-radius:99px;"></div></div><span style="font-size:12px;font-weight:600;color:var(--sage-dark);min-width:36px;">${pct}%</span><span style="font-size:11px;color:var(--text-light);">${loggedDays}일 기록</span></div>`;
+  }
+}
+
+// ─── LOG ─────────────────────────────
+function renderLog() {
+  const tbody=document.getElementById('logBody'); tbody.innerHTML='';
+  const today=dateKey(new Date());
+  // 최근 기록부터 역순으로
+  const keys=Object.keys(allData).filter(k=>k!=='_meta').sort().reverse();
+  if(keys.length===0){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--text-light);padding:20px;">아직 기록이 없어요</td></tr>';return;}
+  keys.forEach(k=>{
+    const rec=allData[k];
+    const d=new Date(k);
+    const dn=dayNumber(d);
+    const isToday=k===today;
+    const exDone=EXERCISE_HABITS.filter(h=>rec.habits&&rec.habits[h.id]).length;
+    const suppDone=SUPP_HABITS.filter(h=>rec.habits&&rec.habits[h.id]).length;
+    const doneH=getDoneHabits(rec);
+    const pct=Math.round(doneH/getTotalHabits()*100);
+    const wCls=rec.weight?'weight-cell':'';
+    const dayLabel=`${d.getMonth()+1}/${d.getDate()}`;
+    tbody.innerHTML+=`<tr ${isToday?'class="today-row"':''}>
+      <td>${dayLabel}</td><td>Day ${dn}</td>
+      <td class="${wCls}">${rec.weight||'-'}</td>
+      <td>${rec.fat||'-'}</td>
+      <td>${rec.water||0}컵</td>
+      <td>${exDone}/${EXERCISE_HABITS.length}</td>
+      <td>${suppDone}/${SUPP_HABITS.length}</td>
+      <td><span style="font-weight:600;color:${pct>=80?'var(--sage-dark)':pct>=50?'var(--gold)':'var(--text-light)'};">${pct}%</span></td>
+    </tr>`;
+  });
+}
+
+// ─── ACTIONS ─────────────────────────
+function changeDay(delta) {
+  saveCurrentInputs();
+  currentDate.setDate(currentDate.getDate()+delta);
+  renderAll();
+}
+
+function saveCurrentInputs() {
+  const td=todayData();
+  td.weight = document.getElementById('inputWeight').value;
+  td.fat    = document.getElementById('inputFat').value;
+  td.muscle = document.getElementById('inputMuscle').value;
+  td.waist  = document.getElementById('inputWaist').value;
+  td.memo   = document.getElementById('memoInput').value;
+}
+
+async function saveToday() {
+  saveCurrentInputs();
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true; btn.textContent = '저장 중...';
+  await save();
+  updateGlobalStats();
+  btn.disabled = false; btn.textContent = '오늘 기록 저장 💾';
+  showToast('✓ 기록이 저장됐어요!');
+}
+
+const ALL_TABS = ['plan','cycle','exercise','diet','night','supp_plan','today','overview','log'];
+function showTab(name) {
+  ALL_TABS.forEach(id => { const el=document.getElementById('tab-'+id); if(el) el.style.display=(id===name)?'block':'none'; });
+  document.querySelectorAll('.tab').forEach(t => { t.classList.toggle('active', t.getAttribute('onclick').includes("'"+name+"'")); });
+  if(name==='overview') renderOverview();
+  if(name==='log')      renderLog();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+['inputWeight','inputFat','inputMuscle','inputWaist'].forEach(id => {
+  document.getElementById(id).addEventListener('change', () => { saveCurrentInputs(); renderBody(); });
+});
+document.getElementById('memoInput').addEventListener('input', () => { todayData().memo = document.getElementById('memoInput').value; });
+
+// ─── INIT ─────────────────────────────
+(async () => {
+  await load();
+  document.getElementById('loadingScreen').style.display = 'none';
+  renderAll();
+})();
+</script>
+</body>
+</html>
