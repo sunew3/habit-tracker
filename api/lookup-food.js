@@ -147,7 +147,13 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'FatSecret 환경변수 미설정 (FATSECRET_CLIENT_ID / FATSECRET_CLIENT_SECRET)' });
 
   try {
-    const token = await getToken(clientId, clientSecret);
+    let token;
+    try {
+      token = await getToken(clientId, clientSecret);
+    } catch(e) {
+      return res.status(500).json({ error: `토큰 발급 실패: ${e.message}` });
+    }
+    if (!token) return res.status(500).json({ error: '토큰이 비어있음 — Client ID/Secret 확인 필요' });
 
     // 특정 food_id 영양상세 조회
     if (food_id) {
@@ -163,10 +169,12 @@ module.exports = async function handler(req, res) {
     const searchQuery = translateQuery(query);
     const url = `https://platform.fatsecret.com/rest/server.api?method=foods.search&search_expression=${encodeURIComponent(searchQuery)}&format=json&max_results=8`;
     const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-    const data = await r.json();
+    const rawText = await r.text();
+    let data;
+    try { data = JSON.parse(rawText); } catch(e) { return res.status(500).json({ error: `JSON 파싱 실패: ${rawText.slice(0,200)}` }); }
 
     const raw = data.foods?.food;
-    if (!raw) return res.json({ known: false });
+    if (!raw) return res.status(500).json({ error: `검색 실패: ${JSON.stringify(data).slice(0,300)}` });
 
     const list = Array.isArray(raw) ? raw : [raw];
     const candidates = list.map(f => ({
