@@ -549,7 +549,9 @@ main { max-width:800px; margin:0 auto; padding:16px 14px 60px; }
     <div style="position:relative;margin-bottom:6px;">
       <input id="foodSearch" type="text" placeholder="검색 또는 AI로 스타벅스·맥도날드 등 찾기..."
         style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;outline:none;font-family:inherit;"
-        oninput="onFoodSearch(this.value)" autocomplete="off">
+        oninput="onFoodSearch(this.value)"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();const v=this.value.trim();if(v){document.getElementById('foodDropdown').style.display='none';lookupAIFood(v);}}"
+        autocomplete="off">
       <div id="foodDropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:white;border:1px solid var(--border);border-radius:var(--radius-sm);z-index:100;max-height:220px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,.1);"></div>
     </div>
 
@@ -1092,7 +1094,11 @@ async function lookupAIFood(query) {
     document.getElementById('customFormContent').style.display = '';
     fillCustomForm(data);
   } catch(e) {
-    document.getElementById('customFormTitle').textContent = '⚠️ AI 검색 실패 — 직접 입력해 주세요';
+    let msg = e.message || '';
+    if (msg.includes('ANTHROPIC_API_KEY')) msg = 'Vercel 환경변수 ANTHROPIC_API_KEY 미설정';
+    else if (msg.includes('401') || msg.includes('403')) msg = 'API 키 오류';
+    else if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) msg = '네트워크 오류 (Vercel 배포 URL에서만 작동)';
+    document.getElementById('customFormTitle').textContent = `⚠️ AI 검색 실패: ${msg}`;
     document.getElementById('aiLoadingMsg').style.display = 'none';
     document.getElementById('customFormContent').style.display = '';
     document.getElementById('cfName').value = query;

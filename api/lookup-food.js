@@ -1,4 +1,18 @@
-const Anthropic = require('@anthropic-ai/sdk');
+const AnthropicModule = require('@anthropic-ai/sdk');
+const Anthropic = AnthropicModule.default || AnthropicModule;
+
+function parseBody(req) {
+  if (req.body && typeof req.body === 'object') return Promise.resolve(req.body);
+  return new Promise((resolve, reject) => {
+    let data = '';
+    req.on('data', chunk => { data += chunk; });
+    req.on('end', () => {
+      try { resolve(JSON.parse(data || '{}')); }
+      catch (e) { resolve({}); }
+    });
+    req.on('error', reject);
+  });
+}
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -7,8 +21,16 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).end();
 
-  const { query } = req.body || {};
-  if (!query) return res.status(400).json({ error: 'query required' });
+  let body;
+  try { body = await parseBody(req); }
+  catch (e) { return res.status(400).json({ error: 'body parse failed: ' + e.message }); }
+
+  const { query } = body;
+  if (!query) return res.status(400).json({ error: 'query is required' });
+
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set in Vercel environment variables' });
+  }
 
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -29,7 +51,7 @@ module.exports = async function handler(req, res) {
 
     const text = message.content[0].text.trim();
     const m = text.match(/\{[\s\S]*\}/);
-    if (!m) throw new Error('JSON 파싱 실패');
+    if (!m) throw new Error('응답에서 JSON을 찾을 수 없음: ' + text.slice(0, 100));
     res.json(JSON.parse(m[0]));
   } catch (e) {
     res.status(500).json({ error: e.message });
