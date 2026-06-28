@@ -57,9 +57,10 @@ All values must be integers. Use 0 only if truly unknown. Do NOT use 0 for calor
 
     const data = await groqRes.json();
     const text = data.choices?.[0]?.message?.content?.trim() || '';
-    const m = text.match(/\{[\s\S]*\}/);
-    if (!m) throw new Error('JSON 파싱 실패: ' + text.slice(0, 100));
-    res.json(JSON.parse(m[0]));
+    const m = text.match(/\{[\s\S]*?\}/);
+    if (!m) throw new Error('JSON 파싱 실패 | raw: ' + text.slice(0, 300));
+    const parsed = JSON.parse(m[0]);
+    res.json({ ...parsed, _raw: text.slice(0, 400) });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
