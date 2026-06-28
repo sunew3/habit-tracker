@@ -902,13 +902,36 @@ function isExerciseDay(td) {
   return td.habits && (td.habits['swim'] || td.habits['gym'] || td.habits['run']);
 }
 
+function foodMatchScore(fname, query) {
+  const f = fname.toLowerCase().replace(/\s+/g,'');
+  const q = query.toLowerCase().replace(/\s+/g,'');
+  if (f === q) return 100;
+  if (f.includes(q)) return 90;
+  if (q.includes(f)) return 85;
+  // 단어별 매칭: "아이스 카페라떼" → "아이스 라떼" (카페라떼에 라떼 포함)
+  const qWords = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const fWords = fname.toLowerCase().split(/\s+/).filter(Boolean);
+  let hits = 0;
+  for (const qw of qWords) {
+    if (fWords.some(fw => fw.includes(qw) || qw.includes(fw))) hits++;
+  }
+  if (hits === qWords.length) return 70;
+  if (hits > 0) return 40;
+  // 글자 포함률: 음식 이름 글자의 80% 이상이 쿼리에 있으면
+  const fChars = [...new Set(f.split(''))];
+  const cov = fChars.filter(c => q.includes(c)).length / fChars.length;
+  if (cov >= 0.8) return 25;
+  return 0;
+}
+
 // 드롭다운 검색
 function onFoodSearch(val) {
   const dd = document.getElementById('foodDropdown');
   const q = val.trim();
   if (!q) { dd.style.display='none'; return; }
-  const ql = q.toLowerCase();
-  const hits = FOOD_DB.filter(f => f.name.includes(ql) || ql.split('').every(c=>f.name.includes(c))).slice(0,7);
+  const scored = FOOD_DB.map(f => ({f, s: foodMatchScore(f.name, q)}))
+    .filter(x => x.s > 0).sort((a,b) => b.s - a.s).slice(0,7).map(x => x.f);
+  const hits = scored;
   const rows = hits.map(f =>
     `<div onclick="addFoodFromDB('${f.name.replace(/'/g,"\\'")}')" style="padding:9px 13px;cursor:pointer;border-bottom:1px solid #F5F2EE;font-size:13px;"
       onmouseover="this.style.background='#F8F5F0'" onmouseout="this.style.background=''">
