@@ -25,15 +25,8 @@ module.exports = async function handler(req, res) {
   const { query } = body;
   if (!query) return res.status(400).json({ error: 'query is required' });
 
-  const apiKey = process.env.GOOGLE_AI_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'GOOGLE_AI_KEY not set in Vercel environment variables' });
-
-  // 디버그: 모델 목록 확인
-  if (query === '__models__') {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`);
-    const d = await r.json();
-    return res.json(d.models ? d.models.map(m => m.name) : d);
-  }
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'GROQ_API_KEY not set in Vercel environment variables' });
 
   const prompt = `"${query}"의 영양 성분을 JSON으로 알려줘.
 브랜드·메뉴 공식 데이터 우선. 없으면 합리적인 추정치 사용.
@@ -43,22 +36,27 @@ module.exports = async function handler(req, res) {
 숫자는 정수. 모르거나 해당없으면 0.`;
 
   try {
-    const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-lite:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-      }
-    );
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 400,
+        temperature: 0.1,
+      }),
+    });
 
-    if (!geminiRes.ok) {
-      const errText = await geminiRes.text();
-      throw new Error(`Gemini ${geminiRes.status}: ${errText.slice(0, 200)}`);
+    if (!groqRes.ok) {
+      const errText = await groqRes.text();
+      throw new Error(`Groq ${groqRes.status}: ${errText.slice(0, 300)}`);
     }
 
-    const data = await geminiRes.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+    const data = await groqRes.json();
+    const text = data.choices?.[0]?.message?.content?.trim() || '';
     const m = text.match(/\{[\s\S]*\}/);
     if (!m) throw new Error('JSON 파싱 실패: ' + text.slice(0, 100));
     res.json(JSON.parse(m[0]));
@@ -66,4 +64,3 @@ module.exports = async function handler(req, res) {
     res.status(500).json({ error: e.message });
   }
 };
-// deploy 2026년 06월 28일 일 오후 12:17:30
