@@ -1087,7 +1087,11 @@ async function lookupAIFood(query) {
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({query}),
     });
-    if (!res.ok) throw new Error(`${res.status}`);
+    if (!res.ok) {
+      let errMsg = `HTTP ${res.status}`;
+      try { const d = await res.json(); errMsg = d.error || errMsg; } catch {}
+      throw new Error(errMsg);
+    }
     const data = await res.json();
     document.getElementById('customFormTitle').textContent = '🤖 AI 검색 결과 — 수정 후 추가';
     document.getElementById('aiLoadingMsg').style.display = 'none';
