@@ -28,12 +28,12 @@ module.exports = async function handler(req, res) {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'GROQ_API_KEY not set in Vercel environment variables' });
 
-  const prompt = `"${query}"의 영양 성분을 JSON으로 알려줘.
-브랜드·메뉴 공식 데이터 우선. 없으면 합리적인 추정치 사용.
-세트 메뉴면 세트 전체 기준. 음료는 ml 명시.
-반드시 이 JSON 형식으로만 답해 (다른 텍스트 없이):
-{"name":"정확한 이름","unit":"기준량(예:1잔 355ml)","cal":숫자,"p":단백질g,"c":탄수화물g,"fat":지방g,"sugar":당류g,"fiber":식이섬유g,"chol":콜레스테롤mg}
-숫자는 정수. 모르거나 해당없으면 0.`;
+  const prompt = `Look up the nutrition facts for: "${query}"
+Use official brand/menu data if available. Use reasonable estimates otherwise.
+For a set/combo meal, include everything in the set.
+Reply with ONLY this JSON (no other text, no markdown):
+{"name":"${query}","unit":"serving size with ml or g","cal":KCAL_NUMBER,"p":PROTEIN_G,"c":CARBS_G,"fat":FAT_G,"sugar":SUGAR_G,"fiber":FIBER_G,"chol":CHOLESTEROL_MG}
+All values must be integers. Use 0 only if truly unknown. Do NOT use 0 for calories of real food.`;
 
   try {
     const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
