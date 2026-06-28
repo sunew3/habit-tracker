@@ -1076,11 +1076,27 @@ async function lookupAIFood(query) {
   document.getElementById('foodSearch').value = '';
   document.getElementById('foodDropdown').style.display = 'none';
   const form = document.getElementById('customFoodForm');
-  document.getElementById('customFormTitle').textContent = '🤖 AI 검색 중...';
-  document.getElementById('aiLoadingMsg').style.display = '';
-  document.getElementById('customFormContent').style.display = 'none';
   document.getElementById('customFormToggleBtn').textContent = '× 닫기';
   form.style.display = '';
+
+  // 로컬 파일에서 열면 /api 경로 사용 불가
+  if (window.location.protocol === 'file:') {
+    document.getElementById('customFormTitle').textContent = '⚠️ AI 검색은 배포 URL에서만 가능';
+    document.getElementById('aiLoadingMsg').innerHTML =
+      '<div style="font-size:12px;line-height:1.7;color:var(--text-mid);padding:4px 0;">' +
+      '로컬 파일에서는 AI 검색을 쓸 수 없어요.<br>' +
+      '<a href="https://habit-tracker-app-alpha-five.vercel.app" target="_blank" style="color:var(--terra);">habit-tracker-app-alpha-five.vercel.app</a> 에서 접속하면 사용 가능해요.</div>';
+    document.getElementById('aiLoadingMsg').style.display = '';
+    document.getElementById('customFormContent').style.display = '';
+    document.getElementById('cfName').value = query;
+    return;
+  }
+
+  document.getElementById('customFormTitle').textContent = '🤖 AI 검색 중...';
+  document.getElementById('aiLoadingMsg').innerHTML = '<div style="font-size:13px;color:var(--text-light);padding:12px 0;">🤖 AI가 영양정보를 검색하는 중...</div>';
+  document.getElementById('aiLoadingMsg').style.display = '';
+  document.getElementById('customFormContent').style.display = 'none';
+
   try {
     const res = await fetch('/api/lookup-food', {
       method: 'POST',
@@ -1101,7 +1117,7 @@ async function lookupAIFood(query) {
     let msg = e.message || '';
     if (msg.includes('ANTHROPIC_API_KEY')) msg = 'Vercel 환경변수 ANTHROPIC_API_KEY 미설정';
     else if (msg.includes('401') || msg.includes('403')) msg = 'API 키 오류';
-    else if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) msg = '네트워크 오류 (Vercel 배포 URL에서만 작동)';
+    else if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) msg = '네트워크 오류';
     document.getElementById('customFormTitle').textContent = `⚠️ AI 검색 실패: ${msg}`;
     document.getElementById('aiLoadingMsg').style.display = 'none';
     document.getElementById('customFormContent').style.display = '';
