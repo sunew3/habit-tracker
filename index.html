@@ -895,6 +895,135 @@ const FOOD_DB = [
   {name:'닭꼬치',           unit:'1개',           cal:130, p:12, c:8,  fat:6},
   // 죽·간편식품
   {name:'죽이야기 고소미8곡죽', unit:'1봉(170g)',  cal:140, p:4,  c:22, fat:5},
+  // ── 스타벅스 코리아 공식 영양정보 (Tall 기준) ─────────────────
+  // 콜드 브루
+  {name:'스타벅스 씨솔트 카라멜 콜드 브루', unit:'Tall (355ml)', cal:145, p:1, c:20, fat:7, sugar:15, fiber:0, chol:5},
+  {name:'스타벅스 나이트로 바닐라 크림', unit:'Tall (355ml)', cal:80, p:1, c:10, fat:2.7, sugar:10, fiber:0, chol:5},
+  {name:'스타벅스 나이트로 콜드 브루', unit:'Tall (355ml)', cal:5, p:0, c:0, fat:0, sugar:0, fiber:0, chol:0},
+  {name:'스타벅스 돌체 콜드 브루', unit:'Tall (355ml)', cal:170, p:4, c:20, fat:8, sugar:17, fiber:0, chol:15},
+  {name:'스타벅스 리저브 나이트로', unit:'Tall (355ml)', cal:5, p:0, c:0, fat:0, sugar:0, fiber:0, chol:0},
+  {name:'스타벅스 리저브 콜드 브루', unit:'Tall (355ml)', cal:5, p:0, c:0, fat:0, sugar:0, fiber:0, chol:0},
+  {name:'스타벅스 막걸리향 크림 콜드 브루', unit:'Tall (355ml)', cal:300, p:3, c:35, fat:16, sugar:32, fiber:0, chol:10},
+  {name:'스타벅스 민트 콜드 브루', unit:'Tall (473ml)', cal:100, p:0, c:24, fat:0, sugar:23, fiber:0, chol:0},
+  {name:'스타벅스 바닐라 아인슈페너 콜드브루', unit:'Tall', cal:115, p:1, c:7, fat:10, sugar:7, fiber:0, chol:0},
+  {name:'스타벅스 바닐라 크림 콜드 브루', unit:'Tall (355ml)', cal:120, p:3, c:11, fat:7, sugar:10, fiber:0, chol:15},
+  {name:'스타벅스 베르가못 콜드 브루', unit:'Tall', cal:5, p:0, c:1, fat:0, sugar:1, fiber:0, chol:0},
+  {name:'스타벅스 블랙&화이트 콜드 브루', unit:'Tall (355ml)', cal:80, p:1, c:6, fat:5, sugar:6, fiber:0, chol:5},
+  {name:'스타벅스 서울 막걸리향 콜드브루', unit:'Tall (355ml)', cal:210, p:2, c:25, fat:11, sugar:21, fiber:0, chol:5},
+  {name:'스타벅스 스모크드 콜드 패션드', unit:'Tall (355ml)', cal:170, p:1, c:28, fat:6, sugar:28, fiber:0, chol:0},
+  {name:'스타벅스 시그니처 더 블랙 콜드 브루', unit:'Tall (355ml)', cal:5, p:0, c:1, fat:0, sugar:0, fiber:0, chol:0},
+  {name:'스타벅스 여수 윤슬 헤이즐넛 콜드브루', unit:'Tall', cal:195, p:1, c:22, fat:11, sugar:21, fiber:0, chol:5},
+  {name:'스타벅스 오트 콜드 브루', unit:'Tall (355ml)', cal:100, p:2, c:15, fat:3, sugar:10, fiber:0, chol:0},
+  {name:'스타벅스 제주 비자림 리저브 콜드 브루', unit:'Tall (355ml)', cal:5, p:0, c:1, fat:0, sugar:0, fiber:0, chol:0},
+  {name:'스타벅스 콜드 브루', unit:'Tall (355ml)', cal:5, p:0, c:0, fat:0, sugar:0, fiber:0, chol:0},
+  {name:'스타벅스 콜드 브루 몰트', unit:'Tall (355ml)', cal:65, p:1, c:11, fat:1.5, sugar:10, fiber:0, chol:0},
+  {name:'스타벅스 콜드 브루 플로트', unit:'Tall (355ml)', cal:130, p:2, c:18, fat:5, sugar:16, fiber:0, chol:15},
+  {name:'스타벅스 프렌치 바닐라 콜드 브루', unit:'Tall', cal:150, p:1, c:16, fat:9, sugar:16, fiber:0, chol:5},
+  // 브루드 커피
+  {name:'스타벅스 브루드 커피', unit:'Tall (355ml)', cal:5, p:0, c:1, fat:0, sugar:0, fiber:0, chol:0},
+  {name:'스타벅스 스위트 밀크 커피', unit:'Tall (355ml)', cal:170, p:4, c:28, fat:4.6, sugar:27, fiber:0, chol:15},
+  {name:'스타벅스 아이스 브루드 커피', unit:'Tall (355ml)', cal:5, p:0, c:1, fat:0, sugar:0, fiber:0, chol:0},
+  // 에스프레소
+  {name:'스타벅스 스타벅스 에어로카노', unit:'Tall (355ml)', cal:15, p:1, c:2, fat:0, sugar:0, fiber:0, chol:0},
+  {name:'스타벅스 에스프레소 콘 파나', unit:'Tall', cal:35, p:0, c:3, fat:2, sugar:2, fiber:0, chol:5},
+  {name:'스타벅스 에스프레소 마키아또', unit:'Tall', cal:15, p:1, c:2, fat:0, sugar:0, fiber:0, chol:0},
+  {name:'스타벅스 1호점 카페 아메리카노', unit:'Tall', cal:10, p:0, c:2, fat:0, sugar:0, fiber:0, chol:0},
+  {name:'스타벅스 아이스 1호점 카페 아메리카노', unit:'Tall', cal:10, p:0, c:2, fat:0, sugar:0, fiber:0, chol:0},
+  {name:'스타벅스 아이스 카페 아메리카노', unit:'Tall (355ml)', cal:10, p:0, c:2, fat:0, sugar:0, fiber:0, chol:0},
+  {name:'스타벅스 카페 아메리카노', unit:'Tall (355ml)', cal:10, p:1, c:2, fat:0, sugar:0, fiber:0, chol:0},
+  {name:'스타벅스 아이스 우베 코코넛 마키아또', unit:'Tall (355ml)', cal:200, p:3, c:29, fat:8, sugar:25, fiber:0, chol:10},
+  {name:'스타벅스 아이스 카라멜 마키아또', unit:'Tall (355ml)', cal:190, p:6, c:28, fat:5, sugar:26, fiber:0, chol:15},
+  {name:'스타벅스 카라멜 마키아또', unit:'Tall (355ml)', cal:190, p:7, c:28, fat:5, sugar:25, fiber:0, chol:15},
+  {name:'스타벅스 아이스 카푸치노', unit:'Tall (355ml)', cal:80, p:5, c:7, fat:3, sugar:6, fiber:0, chol:10},
+  {name:'스타벅스 카푸치노', unit:'Tall (355ml)', cal:80, p:5, c:7, fat:3, sugar:6, fiber:0, chol:10},
+  {name:'스타벅스 라벤더 카페 브레베', unit:'Tall (355ml)', cal:215, p:4, c:22, fat:13, sugar:21, fiber:0, chol:40},
+  {name:'스타벅스 밀크카라멜 라떼', unit:'Tall (355ml)', cal:270, p:7, c:30, fat:13, sugar:21, fiber:0, chol:20},
+  {name:'스타벅스 바닐라 라떼', unit:'Tall (355ml)', cal:190, p:7, c:27, fat:5, sugar:26, fiber:0, chol:15},
+  {name:'스타벅스 바닐라 빈 라떼', unit:'Tall (355ml)', cal:195, p:7, c:28, fat:4.9, sugar:27, fiber:0, chol:15},
+  {name:'스타벅스 번트 카라멜 라떼', unit:'Tall (355ml)', cal:230, p:7, c:33, fat:7, sugar:31, fiber:0, chol:15},
+  {name:'스타벅스 사케라또 비안코 오버 아이스', unit:'Tall', cal:135, p:1, c:16, fat:7, sugar:16, fiber:0, chol:0},
+  {name:'스타벅스 1호점 카페 라떼', unit:'Tall', cal:130, p:7, c:11, fat:6, sugar:9, fiber:0, chol:20},
+  {name:'스타벅스 1호점 크림 라떼', unit:'Tall', cal:235, p:3, c:22, fat:14, sugar:20, fiber:0, chol:10},
+  {name:'스타벅스 꿀 호떡 라떼', unit:'Tall (355ml)', cal:320, p:7, c:44, fat:12, sugar:25, fiber:0, chol:20},
+  {name:'스타벅스 돌체 라떼', unit:'Tall (355ml)', cal:195, p:11, c:31, fat:2.5, sugar:29, fiber:0, chol:10},
+  {name:'스타벅스 아이스 라벤더 카페 브레베', unit:'Tall (355ml)', cal:190, p:3, c:18, fat:12, sugar:17, fiber:0, chol:35},
+  {name:'스타벅스 아이스 밀크카라멜 라떼', unit:'Tall (355ml)', cal:240, p:5, c:26, fat:13, sugar:17, fiber:0, chol:15},
+  {name:'스타벅스 아이스 바닐라 라떼', unit:'Tall (355ml)', cal:150, p:5, c:20, fat:5, sugar:19, fiber:0, chol:15},
+  {name:'스타벅스 아이스 바닐라 빈 라떼', unit:'Tall (355ml)', cal:155, p:5, c:22, fat:4.8, sugar:20, fiber:0, chol:15},
+  {name:'스타벅스 아이스 1호점 카페 라떼', unit:'Tall', cal:110, p:6, c:10, fat:5, sugar:8, fiber:0, chol:15},
+  {name:'스타벅스 아이스 1호점 크림 라떼', unit:'Tall', cal:215, p:2, c:20, fat:14, sugar:19, fiber:0, chol:5},
+  {name:'스타벅스 아이스 꿀 호떡 라떼', unit:'Tall (355ml)', cal:290, p:6, c:38, fat:16, sugar:16, fiber:0, chol:15},
+  {name:'스타벅스 아이스 돌체 라떼', unit:'Tall (355ml)', cal:190, p:10, c:30, fat:3.1, sugar:28, fiber:0, chol:10},
+  {name:'스타벅스 아이스 인절미 크림 라떼', unit:'Tall (355ml)', cal:455, p:9, c:53, fat:23, sugar:43, fiber:0, chol:15},
+  {name:'스타벅스 아이스 카페 라떼', unit:'Tall (355ml)', cal:110, p:6, c:9, fat:6, sugar:8, fiber:0, chol:20},
+  {name:'스타벅스 아이스 카푸치노', unit:'Tall (355ml)', cal:80, p:5, c:7, fat:3.1, sugar:6, fiber:0, chol:10},
+  {name:'스타벅스 아이스 피스타치오 라떼', unit:'Tall (355ml)', cal:260, p:8, c:31, fat:11, sugar:28, fiber:0, chol:20},
+  {name:'스타벅스 인절미 크림 라떼', unit:'Tall (355ml)', cal:475, p:10, c:58, fat:23, sugar:47, fiber:0, chol:20},
+  {name:'스타벅스 카페 라떼', unit:'Tall (355ml)', cal:130, p:7, c:11, fat:6, sugar:9, fiber:0, chol:20},
+  {name:'스타벅스 피스타치오 라떼', unit:'Tall (355ml)', cal:270, p:9, c:35, fat:10, sugar:32, fiber:0, chol:20},
+  {name:'스타벅스 피넛 크림 쿠키 아인슈페너', unit:'Tall (355ml)', cal:310, p:5, c:28, fat:20, sugar:22, fiber:0, chol:20},
+  // 프라푸치노
+  {name:'스타벅스 그린 티 크림 프라푸치노', unit:'Tall (355ml)', cal:320, p:5, c:47, fat:12, sugar:44, fiber:0, chol:40},
+  {name:'스타벅스 더블 에스프레소 칩 프라푸치노', unit:'Tall (355ml)', cal:290, p:5, c:39, fat:13, sugar:36, fiber:0, chol:40},
+  {name:'스타벅스 딸기 딜라이트 요거트 프라푸치노', unit:'Tall (355ml)', cal:220, p:5, c:40, fat:4.4, sugar:37, fiber:0, chol:10},
+  {name:'스타벅스 라이트 버터스카치 프라푸치노', unit:'Tall (355ml)', cal:180, p:6, c:28, fat:4, sugar:25, fiber:0, chol:15},
+  {name:'스타벅스 말차 크림 프라푸치노', unit:'Tall (355ml)', cal:290, p:5, c:42, fat:11, sugar:39, fiber:0, chol:35},
+  {name:'스타벅스 모카 쿠키 크런블 프라푸치노', unit:'Tall (355ml)', cal:365, p:5, c:53, fat:15, sugar:46, fiber:0, chol:40},
+  {name:'스타벅스 모카 프라푸치노', unit:'Tall (355ml)', cal:265, p:5, c:40, fat:9, sugar:36, fiber:0, chol:30},
+  {name:'스타벅스 바닐라 크림 프라푸치노', unit:'Tall (355ml)', cal:260, p:4, c:40, fat:10, sugar:38, fiber:0, chol:35},
+  {name:'스타벅스 버터스카치 프라푸치노', unit:'Tall (355ml)', cal:295, p:5, c:46, fat:10, sugar:43, fiber:0, chol:30},
+  {name:'스타벅스 블랙 티 크림 프라푸치노', unit:'Tall (355ml)', cal:230, p:3, c:35, fat:8, sugar:34, fiber:0, chol:30},
+  {name:'스타벅스 스타벅스 꿀 호떡 크림 프라푸치노', unit:'Tall', cal:400, p:5, c:59, fat:16, sugar:50, fiber:0, chol:40},
+  {name:'스타벅스 에스프레소 프라푸치노', unit:'Tall (355ml)', cal:175, p:4, c:27, fat:5, sugar:24, fiber:0, chol:15},
+  {name:'스타벅스 자바 칩 프라푸치노', unit:'Tall (355ml)', cal:345, p:6, c:50, fat:14, sugar:42, fiber:0, chol:40},
+  {name:'스타벅스 제주 말차 크림 프라푸치노', unit:'Tall (355ml)', cal:295, p:5, c:44, fat:11, sugar:41, fiber:0, chol:35},
+  {name:'스타벅스 카라멜 프라푸치노', unit:'Tall (355ml)', cal:295, p:5, c:46, fat:9, sugar:42, fiber:0, chol:30},
+  // 블렌디드
+  {name:'스타벅스 클래식 밀크티 블렌디드', unit:'Tall (355ml)', cal:315, p:3, c:40, fat:16, sugar:37, fiber:0, chol:10},
+  {name:'스타벅스 여수 바다 유자 블렌디드', unit:'Tall (473ml)', cal:145, p:0, c:42, fat:0.1, sugar:34, fiber:0, chol:0},
+  {name:'스타벅스 제주 탄제린 블렌디드', unit:'Tall (473ml)', cal:260, p:1, c:84, fat:0.3, sugar:43, fiber:0, chol:0},
+  {name:'스타벅스 딸기 딜라이트 요거트 블렌디드', unit:'Tall (355ml)', cal:255, p:7, c:42, fat:6, sugar:38, fiber:0, chol:15},
+  {name:'스타벅스 레드빈 빙수 블렌디드', unit:'Tall (473ml)', cal:700, p:15, c:116, fat:19, sugar:63, fiber:0, chol:15},
+  {name:'스타벅스 말차 폭포 유자 블렌디드', unit:'Tall (355ml)', cal:150, p:1, c:22, fat:0.2, sugar:32, fiber:0, chol:0},
+  {name:'스타벅스 망고 바나나 블렌디드', unit:'Tall (473ml)', cal:290, p:4, c:58, fat:2.7, sugar:45, fiber:0, chol:5},
+  {name:'스타벅스 블랙 글레이즈드 셔벗 플레이트', unit:'Tall (355ml)', cal:190, p:2, c:25, fat:9, sugar:16, fiber:0, chol:5},
+  {name:'스타벅스 애플망고 빙수 블렌디드', unit:'Tall (473ml)', cal:595, p:10, c:99, fat:15, sugar:58, fiber:0, chol:15},
+  {name:'스타벅스 자몽 셔벗 블렌디드', unit:'Tall (473ml)', cal:205, p:0, c:55, fat:0.1, sugar:43, fiber:0, chol:0},
+  {name:'스타벅스 제주 팔삭 셔벗 블렌디드', unit:'Tall (473ml)', cal:225, p:0, c:60, fat:0.1, sugar:50, fiber:0, chol:0},
+  {name:'스타벅스 청포도 에이드 블렌디드', unit:'Tall (355ml)', cal:170, p:0, c:43, fat:0.1, sugar:43, fiber:0, chol:0},
+  {name:'스타벅스 피치 러블리 블렌디드', unit:'Tall (355ml)', cal:220, p:1, c:56, fat:0.3, sugar:55, fiber:0, chol:0},
+  {name:'스타벅스 핑크 드래곤 블렌디드', unit:'Tall (473ml)', cal:290, p:1, c:77, fat:0.2, sugar:60, fiber:0, chol:0},
+  // 스타벅스 피지오
+  {name:'스타벅스 골든 만다린 홉 피지오', unit:'Tall', cal:130, p:0, c:34, fat:0, sugar:33, fiber:0, chol:0},
+  {name:'스타벅스 의암호의 초록빛 자몽 피지오', unit:'Tall', cal:100, p:0, c:25, fat:0, sugar:25, fiber:0, chol:0},
+  {name:'스타벅스 쿨 라임 피지오', unit:'Tall (355ml)', cal:100, p:0, c:25, fat:0, sugar:25, fiber:0, chol:0},
+  {name:'스타벅스 패션 탱고 아이스 티', unit:'Tall (355ml)', cal:80, p:0, c:20, fat:0, sugar:20, fiber:0, chol:0},
+  {name:'스타벅스 핑크 드래곤 피지오', unit:'Tall (355ml)', cal:150, p:0, c:38, fat:0, sugar:38, fiber:0, chol:0},
+  // 티
+  {name:'스타벅스 레몬 캐모마일 블렌드 티', unit:'Tall', cal:75, p:0, c:19, fat:0, sugar:18, fiber:0, chol:0},
+  {name:'스타벅스 아이스 레몬 캐모마일 블렌드 티', unit:'Tall', cal:75, p:0, c:19, fat:0, sugar:18, fiber:0, chol:0},
+  {name:'스타벅스 말차 티라미수 라떼', unit:'Tall', cal:320, p:7, c:37, fat:16, sugar:33, fiber:0, chol:35},
+  {name:'스타벅스 클래식 밀크 티 보틀', unit:'Tall', cal:200, p:5, c:28, fat:7, sugar:26, fiber:0, chol:25},
+  {name:'스타벅스 아이스 말차 티라미수 라떼', unit:'Tall', cal:295, p:6, c:34, fat:15, sugar:30, fiber:0, chol:30},
+  {name:'스타벅스 아이스 라벤더 티 라떼', unit:'Tall (355ml)', cal:145, p:4, c:21, fat:4.1, sugar:21, fiber:0, chol:10},
+  {name:'스타벅스 라벤더 티 라떼', unit:'Tall (355ml)', cal:165, p:5, c:24, fat:4.9, sugar:24, fiber:0, chol:15},
+  {name:'스타벅스 말차 라떼', unit:'Tall (355ml)', cal:160, p:8, c:22, fat:4.2, sugar:20, fiber:0, chol:15},
+  {name:'스타벅스 아이스 말차 라떼', unit:'Tall (355ml)', cal:130, p:6, c:17, fat:3.7, sugar:15, fiber:0, chol:10},
+  {name:'스타벅스 아이스 차이 티 라떼', unit:'Tall (355ml)', cal:165, p:5, c:28, fat:3.3, sugar:26, fiber:0, chol:10},
+  {name:'스타벅스 차이 티 라떼', unit:'Tall (355ml)', cal:190, p:6, c:33, fat:3.8, sugar:30, fiber:0, chol:15},
+  {name:'스타벅스 얼 그레이 티 라떼', unit:'Tall (355ml)', cal:145, p:6, c:18, fat:4.4, sugar:17, fiber:0, chol:15},
+  {name:'스타벅스 아이스 얼 그레이 티 라떼', unit:'Tall (355ml)', cal:120, p:5, c:14, fat:3.9, sugar:13, fiber:0, chol:10},
+  {name:'스타벅스 잉글리쉬 브렉퍼스트 티 라떼', unit:'Tall (355ml)', cal:145, p:6, c:18, fat:4.4, sugar:17, fiber:0, chol:15},
+  // 기타
+  {name:'스타벅스 딸기 콜드폼 딸기 라떼', unit:'Tall', cal:335, p:7, c:52, fat:10, sugar:48, fiber:0, chol:25},
+  {name:'스타벅스 딸기 콜드폼 초콜릿', unit:'Tall', cal:255, p:7, c:49, fat:3.8, sugar:45, fiber:0, chol:10},
+  {name:'스타벅스 시그니처 핫 초콜릿', unit:'Tall (355ml)', cal:405, p:12, c:40, fat:21, sugar:38, fiber:0, chol:20},
+  {name:'스타벅스 아이스 시그니처 초콜릿', unit:'Tall (355ml)', cal:277, p:8, c:22, fat:17, sugar:21, fiber:0, chol:15},
+  {name:'스타벅스 아이스 티라미수 초콜릿', unit:'Tall', cal:360, p:8, c:44, fat:18, sugar:38, fiber:0, chol:20},
+  {name:'스타벅스 티라미수 초콜릿', unit:'Tall (355ml)', cal:440, p:12, c:51, fat:22, sugar:44, fiber:0, chol:35},
+  {name:'스타벅스 말차 클라우드 폼 라떼', unit:'Tall (355ml)', cal:200, p:7, c:28, fat:6, sugar:25, fiber:0, chol:15},
+  {name:'스타벅스 클라우드 코코 말차', unit:'Tall (355ml)', cal:160, p:2, c:29, fat:4.1, sugar:24, fiber:0, chol:0},
+  {name:'스타벅스 프렌치 바닐라 말차 라떼', unit:'Tall (355ml)', cal:380, p:12, c:36, fat:21, sugar:35, fiber:0, chol:35},
 ];
 
 // string(레거시) → 객체 정규화
@@ -1044,6 +1173,23 @@ function removeFood(idx) {
   renderFoodLog();
 }
 
+let _editingIdx = null;
+
+function editFood(idx) {
+  const td = todayData();
+  const f = normalizeFood(td.foods[idx]);
+  _editingIdx = idx;
+
+  const form = document.getElementById('customFoodForm');
+  document.getElementById('customFormToggleBtn').textContent = '× 닫기';
+  form.style.display = '';
+  document.getElementById('aiLoadingMsg').style.display = 'none';
+  document.getElementById('customFormContent').style.display = '';
+  document.getElementById('customFormTitle').textContent = '✏️ 수정 중 — 변경 후 저장하세요';
+  fillCustomForm(f);
+  form.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
 function getFoodTotals(td) {
   return (td.foods || []).map(normalizeFood).reduce((acc, f) => {
     acc.cal  += f.cal  || 0;
@@ -1106,6 +1252,7 @@ function renderFoodLog() {
             ${f.custom?'<span style="font-size:9px;background:var(--terra);color:white;border-radius:3px;padding:1px 4px;margin-left:4px;">직접입력</span>':''}
           </div>
           <span style="font-size:11px;color:var(--terra);white-space:nowrap;">${f.cal}kcal · 단백질 ${f.p}g</span>
+          <button onclick="editFood(${i})" style="border:none;background:#F0EDE8;cursor:pointer;color:var(--text-mid);font-size:11px;padding:2px 7px;border-radius:5px;line-height:1.5;">수정</button>
           <button onclick="removeFood(${i})" style="border:none;background:none;cursor:pointer;color:#ccc;font-size:16px;padding:0 4px;line-height:1;">×</button>
         </div>
         ${extras?`<div style="font-size:10px;color:var(--text-light);margin-top:2px;padding-left:2px;">${extras}</div>`:''}
@@ -1134,6 +1281,7 @@ function toggleCustomForm(aiMode) {
 function closeCustomForm() {
   document.getElementById('customFoodForm').style.display = 'none';
   document.getElementById('customFormToggleBtn').textContent = '+ 직접 입력';
+  _editingIdx = null;
 }
 
 function clearCustomForm() {
@@ -1211,7 +1359,13 @@ function addCustomFood() {
     chol:  parseInt(document.getElementById('cfChol').value)  || 0,
     custom: true,
   };
-  todayData().foods.push(food);
+  const foods = todayData().foods;
+  if (_editingIdx !== null && _editingIdx >= 0 && _editingIdx < foods.length) {
+    foods[_editingIdx] = food;
+    _editingIdx = null;
+  } else {
+    foods.push(food);
+  }
   closeCustomForm();
   renderFoodLog();
 }
