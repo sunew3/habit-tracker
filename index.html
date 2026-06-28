@@ -576,7 +576,7 @@ main { max-width:800px; margin:0 auto; padding:16px 14px 60px; }
           </div>
           <div>
             <div style="font-size:10px;color:var(--text-light);margin-bottom:2px;">기준량</div>
-            <input id="cfUnit" type="text" placeholder="1개, 350ml..." style="width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:6px;font-size:12px;outline:none;font-family:inherit;box-sizing:border-box;">
+            <input id="cfUnit" type="text" placeholder="1개, 350ml..." oninput="onCfUnitChange(this.value)" style="width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:6px;font-size:12px;outline:none;font-family:inherit;box-sizing:border-box;">
           </div>
         </div>
         <!-- 영양소 그리드 -->
@@ -1040,6 +1040,13 @@ function clearCustomForm() {
   });
 }
 
+let _cfBase = null;
+
+function extractGrams(unitStr) {
+  const m = (unitStr || '').match(/(\d+(?:\.\d+)?)\s*(?:g|ml)\b/i);
+  return m ? parseFloat(m[1]) : null;
+}
+
 function fillCustomForm(data) {
   document.getElementById('cfName').value  = data.name  || '';
   document.getElementById('cfUnit').value  = data.unit  || '';
@@ -1050,6 +1057,26 @@ function fillCustomForm(data) {
   document.getElementById('cfFiber').value = data.fiber || '';
   document.getElementById('cfFat').value   = data.fat   || '';
   document.getElementById('cfChol').value  = data.chol  || '';
+  _cfBase = {
+    grams: extractGrams(data.unit || ''),
+    cal: data.cal || 0, p: data.p || 0, c: data.c || 0,
+    sugar: data.sugar || 0, fiber: data.fiber || 0,
+    fat: data.fat || 0, chol: data.chol || 0,
+  };
+}
+
+function onCfUnitChange(val) {
+  if (!_cfBase || !_cfBase.grams) return;
+  const newG = extractGrams(val);
+  if (!newG || newG === _cfBase.grams) return;
+  const r = newG / _cfBase.grams;
+  document.getElementById('cfCal').value   = Math.round(_cfBase.cal   * r) || '';
+  document.getElementById('cfP').value     = Math.round(_cfBase.p     * r) || '';
+  document.getElementById('cfC').value     = Math.round(_cfBase.c     * r) || '';
+  document.getElementById('cfSugar').value = Math.round(_cfBase.sugar * r) || '';
+  document.getElementById('cfFiber').value = Math.round(_cfBase.fiber * r) || '';
+  document.getElementById('cfFat').value   = Math.round(_cfBase.fat   * r) || '';
+  document.getElementById('cfChol').value  = Math.round(_cfBase.chol  * r) || '';
 }
 
 function addCustomFood() {
