@@ -575,8 +575,17 @@ main { max-width:800px; margin:0 auto; padding:16px 14px 60px; }
             <input id="cfName" type="text" placeholder="예: 닭가슴살 샐러드" style="width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:6px;font-size:12px;outline:none;font-family:inherit;box-sizing:border-box;">
           </div>
           <div>
-            <div style="font-size:10px;color:var(--text-light);margin-bottom:2px;">기준량</div>
-            <input id="cfUnit" type="text" placeholder="1개, 350ml..." oninput="onCfUnitChange(this.value)" style="width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:6px;font-size:12px;outline:none;font-family:inherit;box-sizing:border-box;">
+            <div style="font-size:10px;color:var(--text-light);margin-bottom:2px;">기준량 (참고용)</div>
+            <input id="cfUnit" type="text" placeholder="1개, 350ml..." style="width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:6px;font-size:12px;outline:none;font-family:inherit;box-sizing:border-box;">
+          </div>
+        </div>
+        <!-- 섭취량 조정 -->
+        <div id="cfGramRow" style="display:none;margin-bottom:8px;background:#fff;border-radius:8px;padding:8px 10px;border:1px solid var(--border);">
+          <div style="font-size:10px;color:var(--text-light);margin-bottom:4px;">섭취량(g) 조정하면 아래 성분 자동 계산</div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <input id="cfGram" type="number" min="1" placeholder="0" oninput="onCfGramChange(this.value)"
+              style="width:80px;padding:6px 8px;border:1.5px solid var(--terra);border-radius:6px;font-size:13px;font-weight:700;outline:none;font-family:inherit;text-align:center;">
+            <span style="font-size:12px;color:var(--text-mid);">g &nbsp;/&nbsp; <span id="cfGramBase" style="color:#aaa;font-size:11px;"></span></span>
           </div>
         </div>
         <!-- 영양소 그리드 -->
@@ -1128,10 +1137,12 @@ function closeCustomForm() {
 }
 
 function clearCustomForm() {
-  ['cfName','cfUnit','cfCal','cfP','cfC','cfSugar','cfFiber','cfFat','cfChol'].forEach(id => {
+  ['cfName','cfUnit','cfCal','cfP','cfC','cfSugar','cfFiber','cfFat','cfChol','cfGram'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  document.getElementById('cfGramRow').style.display = 'none';
+  _cfBase = null;
 }
 
 let _cfBase = null;
@@ -1151,18 +1162,30 @@ function fillCustomForm(data) {
   document.getElementById('cfFiber').value = data.fiber || '';
   document.getElementById('cfFat').value   = data.fat   || '';
   document.getElementById('cfChol').value  = data.chol  || '';
+
+  const baseG = extractGrams(data.unit || '');
   _cfBase = {
-    grams: extractGrams(data.unit || ''),
+    grams: baseG,
     cal: data.cal || 0, p: data.p || 0, c: data.c || 0,
     sugar: data.sugar || 0, fiber: data.fiber || 0,
     fat: data.fat || 0, chol: data.chol || 0,
   };
+
+  // g 수 조정 row 표시 (기준량에 g/ml 값이 있을 때)
+  const gramRow = document.getElementById('cfGramRow');
+  if (baseG) {
+    gramRow.style.display = '';
+    document.getElementById('cfGram').value = baseG;
+    document.getElementById('cfGramBase').textContent = `기준 ${baseG}g`;
+  } else {
+    gramRow.style.display = 'none';
+  }
 }
 
-function onCfUnitChange(val) {
+function onCfGramChange(val) {
   if (!_cfBase || !_cfBase.grams) return;
-  const newG = extractGrams(val);
-  if (!newG || newG === _cfBase.grams) return;
+  const newG = parseFloat(val);
+  if (!newG || newG <= 0) return;
   const r = newG / _cfBase.grams;
   document.getElementById('cfCal').value   = Math.round(_cfBase.cal   * r) || '';
   document.getElementById('cfP').value     = Math.round(_cfBase.p     * r) || '';
