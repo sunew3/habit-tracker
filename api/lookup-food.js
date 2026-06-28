@@ -33,7 +33,10 @@ module.exports = async function handler(req, res) {
 
   try {
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-8b' });
+    const model = genAI.getGenerativeModel(
+      { model: 'gemini-1.5-flash' },
+      { apiVersion: 'v1' }
+    );
 
     const prompt = `"${query}"의 영양 성분을 JSON으로 알려줘.
 브랜드·메뉴 공식 데이터 우선. 없으면 합리적인 추정치 사용.
