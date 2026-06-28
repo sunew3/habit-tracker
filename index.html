@@ -1017,11 +1017,16 @@ function onFoodSearch(val) {
 function addFoodFromDB(name) {
   const db = FOOD_DB.find(d => d.name === name);
   if (!db) return;
-  const td = todayData();
-  td.foods.push({...db});
   document.getElementById('foodSearch').value = '';
   document.getElementById('foodDropdown').style.display = 'none';
-  renderFoodLog();
+  // 바로 추가 대신 확인 폼 표시
+  const form = document.getElementById('customFoodForm');
+  document.getElementById('customFormToggleBtn').textContent = '× 닫기';
+  form.style.display = '';
+  document.getElementById('aiLoadingMsg').style.display = 'none';
+  document.getElementById('customFormContent').style.display = '';
+  document.getElementById('customFormTitle').textContent = `${db.name} — g 수 조정 후 추가`;
+  fillCustomForm(db);
 }
 
 function removeFood(idx) {
