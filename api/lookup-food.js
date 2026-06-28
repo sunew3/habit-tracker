@@ -11,6 +11,48 @@ function parseBody(req) {
   });
 }
 
+async function getToken(clientId, clientSecret) {
+  const creds = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+  const res = await fetch('https://oauth.fatsecret.com/connect/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Basic ${creds}`,
+    },
+    body: 'grant_type=client_credentials&scope=basic',
+  });
+  if (!res.ok) throw new Error(`Token error ${res.status}`);
+  const data = await res.json();
+  return data.access_token;
+}
+
+function pickServing(servings, foodName) {
+  const list = Array.isArray(servings) ? servings : [servings];
+  // 1회 제공량 우선, 없으면 첫 번째
+  const best = list.find(s =>
+    /serving|1회|portion/i.test(s.serving_description) &&
+    !/100\s*g/i.test(s.serving_description)
+  ) || list[0];
+
+  const amount = best.metric_serving_amount
+    ? `${Math.round(parseFloat(best.metric_serving_amount))}${best.metric_serving_unit || 'g'}`
+    : '';
+  const unit = amount ? `${best.serving_description || '1인분'} (${amount})` : (best.serving_description || '1인분');
+
+  return {
+    known: true,
+    name: foodName,
+    unit,
+    cal:   Math.round(parseFloat(best.calories     || 0)),
+    p:     Math.round(parseFloat(best.protein      || 0)),
+    c:     Math.round(parseFloat(best.carbohydrate || 0)),
+    fat:   Math.round(parseFloat(best.fat          || 0)),
+    sugar: Math.round(parseFloat(best.sugar        || 0)),
+    fiber: Math.round(parseFloat(best.fiber        || 0)),
+    chol:  Math.round(parseFloat(best.cholesterol  || 0)),
+  };
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -20,53 +62,47 @@ module.exports = async function handler(req, res) {
 
   let body;
   try { body = await parseBody(req); }
-  catch (e) { return res.status(400).json({ error: 'body parse failed: ' + e.message }); }
+  catch (e) { return res.status(400).json({ error: 'body parse failed' }); }
 
-  const { query } = body;
-  if (!query) return res.status(400).json({ error: 'query is required' });
+  const { query, food_id } = body;
+  if (!query && !food_id) return res.status(400).json({ error: 'query or food_id required' });
 
-  const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'GROQ_API_KEY not set in Vercel environment variables' });
-
-  const prompt = `Do you have reliable, specific nutrition facts for: "${query}"?
-
-Rules:
-- Only set "known":true if you have confident, specific data for THIS exact product (official brand label or well-documented source).
-- If you are guessing, estimating, or not sure — set "known":false and all numbers to 0.
-- "unit" = one serving size (1회 제공량), e.g. "1봉 170g" or "1잔 355ml".
-- For combo/set meals include everything.
-- All numeric values must be integers.
-
-Reply with ONLY this JSON, no markdown, no extra text:
-{"known":true or false,"name":"${query}","unit":"serving size","cal":KCAL,"p":PROTEIN_G,"c":CARBS_G,"fat":FAT_G,"sugar":SUGAR_G,"fiber":FIBER_G,"chol":CHOLESTEROL_MG}`;
+  const clientId     = process.env.FATSECRET_CLIENT_ID;
+  const clientSecret = process.env.FATSECRET_CLIENT_SECRET;
+  if (!clientId || !clientSecret)
+    return res.status(500).json({ error: 'FatSecret 환경변수 미설정 (FATSECRET_CLIENT_ID / FATSECRET_CLIENT_SECRET)' });
 
   try {
-    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 400,
-        temperature: 0.1,
-      }),
-    });
+    const token = await getToken(clientId, clientSecret);
 
-    if (!groqRes.ok) {
-      const errText = await groqRes.text();
-      throw new Error(`Groq ${groqRes.status}: ${errText.slice(0, 300)}`);
+    // 특정 food_id 영양상세 조회
+    if (food_id) {
+      const url = `https://platform.fatsecret.com/rest/server.api?method=food.get.v4&food_id=${encodeURIComponent(food_id)}&format=json`;
+      const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await r.json();
+      const food = data.food;
+      if (!food?.servings?.serving) return res.json({ known: false });
+      return res.json(pickServing(food.servings.serving, food.food_name));
     }
 
-    const data = await groqRes.json();
-    const text = data.choices?.[0]?.message?.content?.trim() || '';
-    const m = text.match(/\{[\s\S]*?\}/);
-    if (!m) throw new Error('JSON 파싱 실패 | raw: ' + text.slice(0, 300));
-    const parsed = JSON.parse(m[0]);
-    res.json({ ...parsed, _raw: text.slice(0, 400) });
+    // 음식 검색
+    const url = `https://platform.fatsecret.com/rest/server.api?method=foods.search&search_expression=${encodeURIComponent(query)}&format=json&max_results=7`;
+    const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    const data = await r.json();
+
+    const raw = data.foods?.food;
+    if (!raw) return res.json({ known: false });
+
+    const list = Array.isArray(raw) ? raw : [raw];
+    const candidates = list.map(f => ({
+      id:   f.food_id,
+      name: f.food_name,
+      desc: f.food_description || '',
+      brand: f.brand_name || '',
+    }));
+
+    return res.json({ candidates });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e.message });
   }
 };

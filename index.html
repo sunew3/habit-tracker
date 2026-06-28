@@ -1226,13 +1226,16 @@ async function lookupAIFood(query) {
     }
     const data = await res.json();
     document.getElementById('aiLoadingMsg').style.display = 'none';
-    document.getElementById('customFormContent').style.display = '';
     if (data.known === false) {
+      document.getElementById('customFormContent').style.display = '';
       document.getElementById('customFormTitle').textContent = '정보를 찾지 못했어요 — 성분표 보고 직접 입력해주세요';
       document.getElementById('cfName').value = query;
       _cfBase = null;
+    } else if (data.candidates) {
+      showFoodCandidates(data.candidates, query);
     } else {
-      document.getElementById('customFormTitle').textContent = '🤖 AI 검색 결과 — 확인 후 추가';
+      document.getElementById('customFormContent').style.display = '';
+      document.getElementById('customFormTitle').textContent = '✅ 영양정보 확인 후 추가';
       fillCustomForm(data);
     }
   } catch(e) {
@@ -1244,6 +1247,62 @@ async function lookupAIFood(query) {
     document.getElementById('aiLoadingMsg').style.display = 'none';
     document.getElementById('customFormContent').style.display = '';
     document.getElementById('cfName').value = query;
+  }
+}
+
+function showFoodCandidates(candidates, query) {
+  document.getElementById('customFormTitle').textContent = '어떤 제품인가요?';
+  document.getElementById('customFormContent').style.display = 'none';
+  const rows = candidates.map(c => {
+    const safeId   = c.id.replace(/'/g, "\\'");
+    const safeName = c.name.replace(/'/g, "\\'");
+    // desc 예: "Per 100g - Calories: 140kcal | Fat: 5.00g | Carbs: 22.00g | Protein: 4.00g"
+    const calMatch = c.desc.match(/Calories:\s*([\d.]+)\s*kcal/i);
+    const calStr   = calMatch ? `${Math.round(parseFloat(calMatch[1]))}kcal` : '';
+    return `<div onclick="selectFoodCandidate('${safeId}','${safeName}')"
+      style="padding:10px 12px;cursor:pointer;border-bottom:1px solid #F5F2EE;background:#fff;"
+      onmouseover="this.style.background='#F8F5F0'" onmouseout="this.style.background='#fff'">
+      <div style="font-size:13px;font-weight:600;color:#333;">${c.name}</div>
+      ${c.brand ? `<div style="font-size:11px;color:#aaa;">${c.brand}</div>` : ''}
+      ${calStr  ? `<div style="font-size:11px;color:var(--terra);margin-top:2px;">${calStr}</div>` : ''}
+    </div>`;
+  });
+  rows.push(`<div onclick="document.getElementById('aiLoadingMsg').style.display='none';document.getElementById('customFormContent').style.display='';document.getElementById('cfName').value='${query.replace(/'/g,"\\'")}'"
+    style="padding:9px 12px;cursor:pointer;font-size:12px;color:#aaa;text-align:center;"
+    onmouseover="this.style.background='#F8F5F0'" onmouseout="this.style.background=''">
+    직접 입력하기
+  </div>`);
+  document.getElementById('aiLoadingMsg').innerHTML =
+    `<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:4px;">${rows.join('')}</div>`;
+  document.getElementById('aiLoadingMsg').style.display = '';
+}
+
+async function selectFoodCandidate(foodId, foodName) {
+  document.getElementById('customFormTitle').textContent = '영양정보 불러오는 중...';
+  document.getElementById('aiLoadingMsg').innerHTML =
+    '<div style="font-size:13px;color:var(--text-light);padding:12px 0;">영양정보를 불러오는 중...</div>';
+  document.getElementById('aiLoadingMsg').style.display = '';
+  document.getElementById('customFormContent').style.display = 'none';
+  try {
+    const res = await fetch('/api/lookup-food', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({food_id: foodId}),
+    });
+    const data = await res.json();
+    document.getElementById('aiLoadingMsg').style.display = 'none';
+    document.getElementById('customFormContent').style.display = '';
+    if (data.known === false || !data.cal) {
+      document.getElementById('customFormTitle').textContent = '정보를 찾지 못했어요 — 직접 입력해주세요';
+      document.getElementById('cfName').value = foodName;
+    } else {
+      document.getElementById('customFormTitle').textContent = '✅ 영양정보 확인 후 추가';
+      fillCustomForm(data);
+    }
+  } catch(e) {
+    document.getElementById('customFormTitle').textContent = `⚠️ 오류: ${e.message}`;
+    document.getElementById('aiLoadingMsg').style.display = 'none';
+    document.getElementById('customFormContent').style.display = '';
   }
 }
 
