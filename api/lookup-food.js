@@ -28,15 +28,17 @@ module.exports = async function handler(req, res) {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'GROQ_API_KEY not set in Vercel environment variables' });
 
-  const prompt = `Look up the nutrition facts for: "${query}"
+  const prompt = `Do you have reliable, specific nutrition facts for: "${query}"?
+
 Rules:
-- Use official brand/menu nutrition label data if available.
-- "unit" must be ONE SERVING SIZE (1회 제공량), e.g. "1봉 170g" or "1잔 355ml". NOT the total package weight.
-- For a combo/set meal, include the full set.
-- All numeric values must be integers (round to nearest whole number).
-- Do NOT output 0 for calories of real food items.
+- Only set "known":true if you have confident, specific data for THIS exact product (official brand label or well-documented source).
+- If you are guessing, estimating, or not sure — set "known":false and all numbers to 0.
+- "unit" = one serving size (1회 제공량), e.g. "1봉 170g" or "1잔 355ml".
+- For combo/set meals include everything.
+- All numeric values must be integers.
+
 Reply with ONLY this JSON, no markdown, no extra text:
-{"name":"${query}","unit":"1회 제공량 표기 (예: 1봉 170g)","cal":KCAL,"p":PROTEIN_G,"c":CARBS_G,"fat":FAT_G,"sugar":SUGAR_G,"fiber":FIBER_G,"chol":CHOLESTEROL_MG}`;
+{"known":true or false,"name":"${query}","unit":"serving size","cal":KCAL,"p":PROTEIN_G,"c":CARBS_G,"fat":FAT_G,"sugar":SUGAR_G,"fiber":FIBER_G,"chol":CHOLESTEROL_MG}`;
 
   try {
     const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
