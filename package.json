@@ -1,7 +1,5 @@
 {
   "name": "habit-tracker-app",
   "version": "1.0.0",
-  "dependencies": {
-    "@google/generative-ai": "^0.24.0"
-  }
+  "dependencies": {}
 }
