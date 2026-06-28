@@ -66,3 +66,4 @@ module.exports = async function handler(req, res) {
     res.status(500).json({ error: e.message });
   }
 };
+// deploy 2026년 06월 28일 일 오후 12:17:30
