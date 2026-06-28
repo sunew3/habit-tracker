@@ -28,6 +28,13 @@ module.exports = async function handler(req, res) {
   const apiKey = process.env.GOOGLE_AI_KEY;
   if (!apiKey) return res.status(500).json({ error: 'GOOGLE_AI_KEY not set in Vercel environment variables' });
 
+  // 디버그: 모델 목록 확인
+  if (query === '__models__') {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`);
+    const d = await r.json();
+    return res.json(d.models ? d.models.map(m => m.name) : d);
+  }
+
   const prompt = `"${query}"의 영양 성분을 JSON으로 알려줘.
 브랜드·메뉴 공식 데이터 우선. 없으면 합리적인 추정치 사용.
 세트 메뉴면 세트 전체 기준. 음료는 ml 명시.
